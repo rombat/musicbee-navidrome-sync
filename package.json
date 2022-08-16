@@ -1,0 +1,20 @@
+{
+  "name": "musicbee-navidrome-sync",
+  "version": "1.0.0",
+  "description": "sync ratings and playcount from musicbee db to navidrome db",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "rombat",
+  "license": "ISC",
+  "dependencies": {
+    "camelcase": "^7.0.0",
+    "commander": "^9.4.0",
+    "csvtojson": "^2.0.10",
+    "dayjs": "^1.11.5",
+    "p-limit": "^4.0.0",
+    "sequelize": "^6.21.3",
+    "sqlite3": "^5.0.11"
+  }
+}
