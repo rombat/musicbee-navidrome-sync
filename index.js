@@ -6,11 +6,9 @@ program.name('musicbee-navidrome-sync').description('Tools to sync MusicBee DB w
 program
   .command('sync')
   .description('sync playcount, track ratings, loved tracks and last played from MusicBee DB to Navidrome DB')
+  .option('-u, --user <user_name>', 'choose username (by default if not used, the first user will be used)')
   .option('-f, --first', 'run sync for the first time: add MB playcount to ND playcount')
-  // .option('-p, --path [dbPath]', 'chose db file path (default: ./data/navidrome.db)')
   .option('-v, --verbose', 'verbose debugging')
   .action(fullSync);
-
-// TODO: add argument for user_name
 
 program.parse();
