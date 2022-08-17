@@ -11,4 +11,13 @@ program
   .option('-v, --verbose', 'verbose debugging')
   .action(fullSync);
 
+/**
+ * TODO
+ * readme
+ * esm
+ * refactor as a class
+ * dedicated command to update albums only
+ * dedicated command to update artists only
+ */
+
 program.parse();
