@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "camelcase": "^7.0.0",
+    "cli-progress": "^3.11.2",
     "commander": "^9.4.0",
     "csvtojson": "^2.0.10",
     "dayjs": "^1.11.5",

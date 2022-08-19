@@ -25,11 +25,4 @@ program
   .option('-v, --verbose', 'verbose debugging')
   .action(artistsSync);
 
-/**
- * TODO
- * readme
- * esm
- * refacto as class?
- */
-
 program.parse();
