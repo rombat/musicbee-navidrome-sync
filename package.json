@@ -4,7 +4,10 @@
   "description": "sync ratings and playcount from musicbee db to navidrome db",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "fullSync": "node index.js sync",
+    "albumsSync": "node index.js albumsSync",
+    "artistsSync": "node index.js artistsSync"
   },
   "author": "rombat",
   "license": "ISC",
