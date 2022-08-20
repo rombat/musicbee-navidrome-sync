@@ -5,12 +5,12 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "fullSync": "node index.js sync",
+    "fullSync": "node index.js fullSync",
     "albumsSync": "node index.js albumsSync",
     "artistsSync": "node index.js artistsSync"
   },
   "author": "rombat",
-  "license": "ISC",
+  "license": "GNU GPL V3.0",
   "dependencies": {
     "camelcase": "^7.0.0",
     "cli-progress": "^3.11.2",
@@ -20,5 +20,8 @@
     "p-limit": "^4.0.0",
     "sequelize": "^6.21.3",
     "sqlite3": "^5.0.11"
+  },
+  "engines" : {
+    "node" : ">=16.0.0"
   }
 }
