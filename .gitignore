@@ -3,3 +3,5 @@
 .idea/
 /node_modules/
 TODO.md
+/musicbee-navidrome-sync.exe
+/dist/
