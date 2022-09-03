@@ -3,3 +3,8 @@
 .idea/
 /node_modules/
 TODO.md
+/musicbee-navidrome-sync.exe
+/dist/
+/MusicBee_Export.csv
+/navidrome.db
+/backups/
