@@ -8,7 +8,7 @@ const runAction = async (options, command) => {
 
 program
   .name('musicbee-navidrome-sync')
-  .description('Tools to sync MusicBee DB with Navidrome DB')
+  .description('MusicBee to Navidrome Sync (MBNDS) : Tools to sync MusicBee DB with Navidrome DB')
   .version('1.0.0', '-v, --version', 'output the current version');
 
 program
@@ -24,7 +24,7 @@ program
   )
   .option(
     '--db <path>',
-    'Navidrome SQLITE DB source file path. Default: navidrome.db, in the same folder as MBNDS',
+    'Navidrome SQLITE .db source file path. Default: navidrome.db, in the same folder as MBNDS',
     'navidrome.db'
   )
   .action(runAction);
