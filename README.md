@@ -32,7 +32,7 @@ MusicBee to Navidrome Sync allows you to:
 4. Click on **Preview**, MusicBee will scan your entire collection, so it can take some time depending on its size. Once it's done, click on **Export** and name your file `MusicBee_Export.csv`
 5. **Shutdown Navidrome properly**. This is mandatory to avoid backing up its database while there's still operations going on with it.
 6. Once Navidrome is shut down, backup its database file, `navidrome.db`. Its location is usually in navidrome `/data` folder. You can back up it either by copying it or with sqlite3 CLI if installed (`sqlite3 <path to original file> ".timeout 30000" ".backup <path to backup file>"` for instance). If you back it up by copying, just copy `navidrome.db-shm` or `navidrome.db-wal` too if present, just for precaution.
-7. Download this repository last release .exe
+7. Download [this repository latest release](https://github.com/rombat/musicbee-navidrome-sync/releases) .exe
 8. Copy `navidrome.db` and `MusicBee_Export.csv` in the same folder as this .exe (or you can provide pathes with CLI, see **Commands** below)
 9. Run the command you want to run (, see **Commands** below), your database file will be updated
 10. Once it's done, go back to navidrome `/data` folder where you found `navidrome.db` and overwrite it with the updated one. Remove any remaining `navidrome.db-shm` or `navidrome.db-wal` or you will probably get some errors on navidrome startup.
