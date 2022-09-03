@@ -9,8 +9,16 @@ program
   .option('-u, --user <user_name>', 'choose Navidrome username (by default if not used, the first user will be used)')
   .option('-f, --first', 'run sync for the first time: add MB playcount to ND playcount')
   .option('-v, --verbose', 'verbose debugging')
-  .option('--csv <path>', 'MusicBee CSV source file path')
-  .option('--db <path>', 'Navidrome SQLITE DB source file path')
+  .option(
+    '--csv <path>',
+    'MusicBee CSV source file path. Default: MusicBee_Export.csv, in the same folder as MBNDS',
+    'MusicBee_Export.csv'
+  )
+  .option(
+    '--db <path>',
+    'Navidrome SQLITE DB source file path. Default: navidrome.db, in the same folder as MBNDS',
+    'navidrome.db'
+  )
   .action(fullSync);
 
 program
@@ -18,6 +26,11 @@ program
   .description('update all albums playcounts and ratings based on existing Navidrome DB')
   .option('-u, --user <user_name>', 'choose Navidrome username (by default if not used, the first user will be used)')
   .option('-v, --verbose', 'verbose debugging')
+  .option(
+    '--db <path>',
+    'Navidrome SQLITE DB source file path. Default: navidrome.db, in the same folder as MBNDS',
+    'navidrome.db'
+  )
   .action(albumsSync);
 
 program
