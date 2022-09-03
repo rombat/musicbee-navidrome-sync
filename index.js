@@ -1,5 +1,10 @@
 const { program } = require('commander');
-const { fullSync, albumsSync, artistsSync } = require('./lib/handlers/sync.js');
+const { MBNDSynchronizer } = require('./lib/handlers/MBNDSynchronizer.js');
+
+const runAction = async (options, command) => {
+  const synchronizer = new MBNDSynchronizer(options);
+  await synchronizer.run(command._name);
+};
 
 program.name('musicbee-navidrome-sync').description('Tools to sync MusicBee DB with Navidrome DB').version('1.0.0');
 
@@ -19,7 +24,7 @@ program
     'Navidrome SQLITE DB source file path. Default: navidrome.db, in the same folder as MBNDS',
     'navidrome.db'
   )
-  .action(fullSync);
+  .action(runAction);
 
 program
   .command('albumsSync')
@@ -31,13 +36,18 @@ program
     'Navidrome SQLITE DB source file path. Default: navidrome.db, in the same folder as MBNDS',
     'navidrome.db'
   )
-  .action(albumsSync);
+  .action(runAction);
 
 program
   .command('artistsSync')
   .description('update all artists playcounts and ratings based on existing Navidrome DB')
   .option('-u, --user <user_name>', 'choose Navidrome username (by default if not used, the first user will be used)')
   .option('-v, --verbose', 'verbose debugging')
-  .action(artistsSync);
+  .option(
+    '--db <path>',
+    'Navidrome SQLITE DB source file path. Default: navidrome.db, in the same folder as MBNDS',
+    'navidrome.db'
+  )
+  .action(runAction);
 
 program.parse();
