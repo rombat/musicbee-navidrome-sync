@@ -8,7 +8,9 @@ const runAction = async (options, command) => {
 
 program
   .name('musicbee-navidrome-sync')
-  .description('MusicBee to Navidrome Sync (MBNDS) : Tools to sync MusicBee DB with Navidrome DB')
+  .description(
+    'MusicBee to Navidrome Sync (MBNDS) : Tools to sync MusicBee DB with Navidrome DB\nhttps://github.com/rombat/musicbee-navidrome-sync'
+  )
   .version('1.0.0', '-v, --version', 'output the current version');
 
 program
@@ -36,7 +38,7 @@ program
   .option('-vv, --verbose', 'verbose debugging')
   .option(
     '--db <path>',
-    'Navidrome SQLITE DB source file path. Default: navidrome.db, in the same folder as MBNDS',
+    'Navidrome SQLITE .db source file path. Default: navidrome.db, in the same folder as MBNDS',
     'navidrome.db'
   )
   .action(runAction);
@@ -48,7 +50,7 @@ program
   .option('-vv, --verbose', 'verbose debugging')
   .option(
     '--db <path>',
-    'Navidrome SQLITE DB source file path. Default: navidrome.db, in the same folder as MBNDS',
+    'Navidrome SQLITE .db source file path. Default: navidrome.db, in the same folder as MBNDS',
     'navidrome.db'
   )
   .action(runAction);
