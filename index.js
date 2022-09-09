@@ -9,9 +9,9 @@ const runAction = async (options, command) => {
 program
   .name('musicbee-navidrome-sync')
   .description(
-    'MusicBee to Navidrome Sync (MBNDS) : Tools to sync MusicBee DB with Navidrome DB\nhttps://github.com/rombat/musicbee-navidrome-sync'
+    'MusicBee to Navidrome Sync (MBNDS) : Tools to sync MusicBee DB to Navidrome DB\nhttps://github.com/rombat/musicbee-navidrome-sync'
   )
-  .version('1.0.0', '-v, --version', 'output the current version');
+  .version('1.0.1', '-v, --version', 'output the current version');
 
 program
   .command('fullSync')
