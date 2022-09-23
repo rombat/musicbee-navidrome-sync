@@ -11,7 +11,7 @@ program
   .description(
     'MusicBee to Navidrome Sync (MBNDS) : Tools to sync MusicBee DB to Navidrome DB\nhttps://github.com/rombat/musicbee-navidrome-sync'
   )
-  .version('1.0.1', '-v, --version', 'output the current version');
+  .version('1.0.3', '-v, --version', 'output the current version');
 
 program
   .command('fullSync')
