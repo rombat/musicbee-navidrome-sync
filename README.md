@@ -33,7 +33,7 @@ MusicBee to Navidrome Sync allows you to:
 4. Click on **Preview**, MusicBee will scan your entire collection, so it can take some time depending on its size. Once it's done, click on **Export** and name your file `MusicBee_Export.csv`
 5. **Shutdown Navidrome properly**. This is mandatory to avoid backing up its database while there's still operations going on with it.
 6. Once Navidrome is shut down, backup its database file, `navidrome.db`. Its location is usually in navidrome `/data` folder. You can back up it either by copying it or with sqlite3 CLI if installed (`sqlite3 <path to original file> ".timeout 30000" ".backup <path to backup file>"` for instance). If you back it up by copying, just copy `navidrome.db-shm` or `navidrome.db-wal` too if present, just for precaution.
-7. Download [this repository latest release](https://github.com/rombat/musicbee-navidrome-sync/releases) .exe
+7. Download [this repository latest release](https://github.com/rombat/musicbee-navidrome-sync/releases/latest) .exe
 8. Copy `navidrome.db` and `MusicBee_Export.csv` in the same folder as this .exe (or you can provide pathes with CLI, see **Commands** below)
 9. Run the command you want to run (, see **Commands** below), your database file will be updated
 10. Once it's done, go back to navidrome `/data` folder where you found `navidrome.db` and overwrite it with the updated one. Remove any remaining `navidrome.db-shm` or `navidrome.db-wal` or you will probably get some errors on navidrome startup.
@@ -47,28 +47,28 @@ For instance, `musicbee-navidrome-sync.exe fullSync -h`
 
 ### fullSync
 
-Sync playcounts, track ratings, loved tracks and last played date from MusicBee DB to Navidrome DB. Run on tracks first, then update albums and artists accordingly.
+Syncs playcounts, track ratings, loved tracks and last played date from MusicBee DB to Navidrome DB. Runs on tracks first, then updates albums and artists accordingly.
 
 #### Available options :
 
-* `-f, --first` : run sync for the first time: **add** MusicBee playcount to Navidrome playcount. If not used, playcount will be updated only if it greater than Navidrome's one (see [Notes](#-notes)). 
+* `-f, --first` : runs sync for the first time: **add** MusicBee playcount to Navidrome playcount. If not used, playcount will be updated only if greater than Navidrome's one (see [Notes](#-notes)). 
 * `--csv <path>` : MusicBee CSV source file path. By default if not passed, will look for a file named `MusicBee_Export.csv` in the same folder as `musicbee-navidrome-sync.exe`
 
 ### albumsSync
 
-Update all albums playcounts and ratings based on existing Navidrome DB.
+Updates all albums playcounts and ratings based on existing Navidrome DB.
 
 ### artistsSync
 
-Update all artists playcounts and ratings based on existing Navidrome DB
+Updates all artists playcounts and ratings based on existing Navidrome DB
 
 ### Common options
 
 All commands have these options available:
 * `--db <path>` : Navidrome SQLITE .db source file path. By default if not passed, will look for a file named `navidrome.db` in the same folder as `musicbee-navidrome-sync.exe`
-* `-u, --user <user_name>` : choose Navidrome username (by default if not used, the first found user will be used)
+* `-u, --user <user_name>` : selects Navidrome username (by default if not used, the first found user will be used)
 * `--verbose` : verbose debugging
-* `-h, --help` : display help for command
+* `-h, --help` : displays help for command
 
 
 ## 📋 Notes
