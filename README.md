@@ -24,6 +24,7 @@ MusicBee to Navidrome Sync allows you to:
     * `<File path>`
     * `<Filename>`
     * `<Folder>`
+    * `Title`
     * `Last Played`
     * `Play Count`
     * `Rating`
@@ -66,7 +67,7 @@ Update all artists playcounts and ratings based on existing Navidrome DB
 All commands have these options available:
 * `--db <path>` : Navidrome SQLITE .db source file path. By default if not passed, will look for a file named `navidrome.db` in the same folder as `musicbee-navidrome-sync.exe`
 * `-u, --user <user_name>` : choose Navidrome username (by default if not used, the first found user will be used)
-* `-vv, --verbose` : verbose debugging
+* `--verbose` : verbose debugging
 * `-h, --help` : display help for command
 
 

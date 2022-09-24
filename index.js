@@ -11,14 +11,14 @@ program
   .description(
     'MusicBee to Navidrome Sync (MBNDS) : Tools to sync MusicBee DB to Navidrome DB\nhttps://github.com/rombat/musicbee-navidrome-sync'
   )
-  .version('1.0.3', '-v, --version', 'output the current version');
+  .version('1.0.4', '-v, --version', 'output the current version');
 
 program
   .command('fullSync')
   .description('sync playcounts, track ratings, loved tracks and last played from MusicBee DB to Navidrome DB')
   .option('-u, --user <user_name>', 'choose Navidrome username (by default if not used, the first user will be used)')
   .option('-f, --first', 'run sync for the first time: add MB playcount to ND playcount')
-  .option('-vv, --verbose', 'verbose debugging')
+  .option('--verbose', 'verbose debugging')
   .option(
     '--csv <path>',
     'MusicBee CSV source file path. Default: MusicBee_Export.csv, in the same folder as MBNDS',
@@ -35,7 +35,7 @@ program
   .command('albumsSync')
   .description('update all albums playcounts and ratings based on existing Navidrome DB')
   .option('-u, --user <user_name>', 'choose Navidrome username (by default if not used, the first user will be used)')
-  .option('-vv, --verbose', 'verbose debugging')
+  .option('--verbose', 'verbose debugging')
   .option(
     '--db <path>',
     'Navidrome SQLITE .db source file path. Default: navidrome.db, in the same folder as MBNDS',
@@ -47,7 +47,7 @@ program
   .command('artistsSync')
   .description('update all artists playcounts and ratings based on existing Navidrome DB')
   .option('-u, --user <user_name>', 'choose Navidrome username (by default if not used, the first user will be used)')
-  .option('-vv, --verbose', 'verbose debugging')
+  .option('--verbose', 'verbose debugging')
   .option(
     '--db <path>',
     'Navidrome SQLITE .db source file path. Default: navidrome.db, in the same folder as MBNDS',
