@@ -1,5 +1,6 @@
 const { program } = require('commander');
 const { MBNDSynchronizer } = require('./lib/handlers/MBNDSynchronizer.js');
+const packageJson = require('./package.json');
 
 const runAction = async (options, command) => {
   const synchronizer = new MBNDSynchronizer(options);
@@ -11,7 +12,7 @@ program
   .description(
     'MusicBee to Navidrome Sync (MBNDS) : Tools to sync MusicBee DB to Navidrome DB\nhttps://github.com/rombat/musicbee-navidrome-sync'
   )
-  .version('1.0.4', '-v, --version', 'output the current version');
+  .version(packageJson.version, '-v, --version', 'output the current version');
 
 program
   .command('fullSync')
