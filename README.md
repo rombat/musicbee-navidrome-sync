@@ -21,7 +21,7 @@ MusicBee to Navidrome Sync allows you to:
 1. First, you need MusicBee 3 with its language set as **English** and [Additional Tagging & Reporting Tools](https://getmusicbee.com/addons/plugins/49/additional-tagging-amp-reporting-tools/) plugin installed
 2. Once it's done, select **Music** under the Collection menu. Then click on **MusicBee** > **Tools** > **Additional Tagging Tools** > **Library Report**... to export library data  in a CSV
 3. Here, you have to select tags that will be exported as headers for your CSV. You need to select **at least** the following ones for MBNDS to work properly:
-    * `<File path>`
+    * `<File Path>`
     * `<Filename>`
     * `<Folder>`
     * `Title`
@@ -80,7 +80,10 @@ All commands have these options available:
   * For tracks: if MusicBee rating is greater than Navidrome rating
   * For albums, if more than half of the album tracks are rated (its rating will be the average of available tracks ratings)
   * For artists, same as album, will be applied only to artists with more than 1 track
-
+* Tested with the following versions :
+  * MusicBee: 3.5.*
+  * Advance Tagging and Reporting Tool: 5.2.* , 5.7.*
+  
 
 ## ➡️ What's next ?
 
