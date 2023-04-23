@@ -1,5 +1,10 @@
 # MusicBee to Navidrome Sync (MBNDS)
 
+<a href="https://github.com/rombat/musicbee-navidrome-sync/blob/master/LICENCE"><img src="https://img.shields.io/github/license/rombat/musicbee-navidrome-sync?color=green" /></a>
+<a href="https://github.com/rombat/musicbee-navidrome-sync/releases/latest"><img src="https://img.shields.io/github/v/release/rombat/musicbee-navidrome-sync?include_prereleases?color=blue" /></a>
+<a href="https://github.com/rombat/musicbee-navidrome-sync/releases"><img src="https://img.shields.io/github/downloads/rombat/musicbee-navidrome-sync/total?color=orange" /></a>
+
+
 ## 🎶 Preamble
 
 I've been using [MusicBee](https://www.getmusicbee.com/) for more than a decade. That means years of playcounts, ratings, loved tracks and so on.  
