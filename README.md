@@ -23,7 +23,7 @@ MusicBee to Navidrome Sync allows you to:
 
 ## ❔ How to use it
 
-1. First, you need MusicBee 3 with its language set as **English** and [Additional Tagging & Reporting Tools](https://getmusicbee.com/addons/plugins/49/additional-tagging-amp-reporting-tools/) plugin installed
+1. First, you need MusicBee 3.5 with its language set as **English** and [Additional Tagging & Reporting Tools](https://getmusicbee.com/addons/plugins/49/additional-tagging-amp-reporting-tools/) plugin installed
 2. Once it's done, select **Music** under the Collection menu. Then click on **MusicBee** > **Tools** > **Additional Tagging Tools** > **Library Report**... to export library data  in a CSV
 3. Here, you have to select tags that will be exported as headers for your CSV. You need to select **at least** the following ones for MBNDS to work properly:
     * `<File Path>`
@@ -35,7 +35,7 @@ MusicBee to Navidrome Sync allows you to:
     * `Rating`
     * `Love`
     * `Skip Count`
-4. Click on **Preview**, MusicBee will scan your entire collection, so it can take some time depending on its size. Once it's done, click on **Export** and name your file `MusicBee_Export.csv`
+4. Click on **Preview**, MusicBee will scan your entire collection, so it can take some time depending on its size. Once it's done, select CSV in Format (in necessary), click on **Export** and name your file `MusicBee_Export.csv`
 5. **Shutdown Navidrome properly**. This is mandatory to avoid backing up its database while there's still operations going on with it.
 6. Once Navidrome is shut down, backup its database file, `navidrome.db`. Its location is usually in navidrome `/data` folder. You can back up it either by copying it or with sqlite3 CLI if installed (`sqlite3 <path to original file> ".timeout 30000" ".backup <path to backup file>"` for instance). If you back it up by copying, you can also back up `navidrome.db-shm` or `navidrome.db-wal` somewhere too if present, just for precaution.
 7. Download [this repository latest release](https://github.com/rombat/musicbee-navidrome-sync/releases/latest) .exe
@@ -86,8 +86,16 @@ All commands have these options available:
   * For albums, if more than half of the album tracks are rated (its rating will be the average of available tracks ratings)
   * For artists, same as album, will be applied only to artists with more than 1 track
 * Tested with the following versions :
-  * MusicBee: 3.5.*
-  * Advance Tagging and Reporting Tool: 5.2.* , 5.7.*
+  * MusicBee:
+    * 3.5.*
+  * Advance Tagging and Reporting Tool:
+    * 5.2.*
+    * 5.7.*
+  * Navidrome:
+    * 0.47.5
+    * 0.48.*
+    * 0.49.*
+    * 0.50.* 
   
 
 ## ➡️ What's next ?
