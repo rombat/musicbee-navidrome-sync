@@ -95,7 +95,8 @@ All commands have these options available:
     * 0.47.5
     * 0.48.*
     * 0.49.*
-    * 0.50.* 
+    * 0.50.*
+    * 0.51.*
   
 
 ## ➡️ What's next ?
