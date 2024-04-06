@@ -1,13 +1,14 @@
 {
   "name": "musicbee-navidrome-sync",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "sync ratings and playcount from musicbee db to navidrome db",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "fullSync": "node index.js fullSync",
     "albumsSync": "node index.js albumsSync",
-    "artistsSync": "node index.js artistsSync"
+    "artistsSync": "node index.js artistsSync",
+    "build": "pkg ."
   },
   "author": "rombat",
   "license": "GNU GPL V3.0",
@@ -28,6 +29,7 @@
   "pkg": {
     "assets": ["node_modules/**/*"],
     "targets": [ "node16-win-x64"],
-    "outputPath": "dist"
+    "outputPath": "dist",
+    "outputName": "musicbee-navidrome-sync"
   }
 }
