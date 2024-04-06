@@ -22,18 +22,16 @@ const commandLinesOptions = {
     flags: '-u, --user <user_name>',
     description: 'choose Navidrome username (by default if not used, the first user will be used)'
   },
+  datetimeFormat: {
+    flags: '--datetime-format <format>',
+    description: 'MusicBee CSV datetime format. Default: "DD/MM/YYYY HH:mm"',
+    defaultValue: 'DD/MM/YYYY HH:mm'
+  },
   verbose: {
     flags: '--verbose',
     description: 'verbose debugging'
   }
 };
-
-program
-  .name('musicbee-navidrome-sync')
-  .description(
-    'MusicBee to Navidrome Sync (MBNDS) : Tools to sync MusicBee DB to Navidrome DB\nhttps://github.com/rombat/musicbee-navidrome-sync'
-  )
-  .version(packageJson.version, '-v, --version', 'output the current version');
 
 program
   .command('fullSync')
@@ -43,7 +41,19 @@ program
   .option(commandLinesOptions.verbose.flags, commandLinesOptions.verbose.description)
   .option(commandLinesOptions.csv.flags, commandLinesOptions.description, commandLinesOptions.defaultValue)
   .option(commandLinesOptions.db.flags, commandLinesOptions.db.description, commandLinesOptions.db.defaultValue)
+  .option(
+    commandLinesOptions.datetimeFormat.flags,
+    commandLinesOptions.datetimeFormat.description,
+    commandLinesOptions.datetimeFormat.defaultValue
+  )
   .action(runAction);
+
+program
+  .name('musicbee-navidrome-sync')
+  .description(
+    'MusicBee to Navidrome Sync (MBNDS) : Tools to sync MusicBee DB to Navidrome DB\nhttps://github.com/rombat/musicbee-navidrome-sync'
+  )
+  .version(packageJson.version, '-v, --version', 'output the current version');
 
 program
   .command('albumsSync')
