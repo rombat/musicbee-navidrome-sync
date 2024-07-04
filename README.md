@@ -93,6 +93,7 @@ All commands have these options available:
   * Advance Tagging and Reporting Tool:
     * 5.2.*
     * 5.7.*
+    * 8.0.*
   * Navidrome:
     * 0.47.5
     * 0.48.*
