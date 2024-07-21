@@ -19,17 +19,24 @@
     "csvtojson": "^2.0.10",
     "dayjs": "^1.11.5",
     "p-limit": "^3.1.0",
-    "sequelize": "^6.37.3",
-    "sqlite3": "^5.1.7"
+    "sequelize": "^6.21.3",
+    "sqlite3": "^5.0.11"
   },
   "engines": {
     "node": ">=16.0.0"
   },
   "bin": "index.js",
   "pkg": {
-    "assets": ["node_modules/**/*"],
-    "targets": [ "node18-win-x64"],
+    "assets": [
+      "node_modules/**/*"
+    ],
+    "targets": [
+      "node16-win-x64"
+    ],
     "outputPath": "dist",
     "outputName": "musicbee-navidrome-sync"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3"
   }
 }
