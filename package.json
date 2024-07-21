@@ -27,9 +27,16 @@
   },
   "bin": "index.js",
   "pkg": {
-    "assets": ["node_modules/**/*"],
-    "targets": [ "node16-win-x64"],
+    "assets": [
+      "node_modules/**/*"
+    ],
+    "targets": [
+      "node16-win-x64"
+    ],
     "outputPath": "dist",
     "outputName": "musicbee-navidrome-sync"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3"
   }
 }
