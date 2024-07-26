@@ -23,7 +23,7 @@ jobs:
     - name: Install dependencies
       run: npx ci
     - name: Install semantic-release extra plugins
-      run: npm install -D semantic-release@22.0.12 @semantic-release/exec @semantic-release/changelog @semantic-release/git @semantic-release/github
+      run: npm install -D semantic-release@22.0.12 @semantic-release/exec @semantic-release/changelog @semantic-release/git @semantic-release/github@9.2.6
     - name: Release
       env:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
