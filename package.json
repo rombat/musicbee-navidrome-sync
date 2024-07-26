@@ -1,6 +1,6 @@
 {
   "name": "musicbee-navidrome-sync",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "sync ratings and playcount from musicbee db to navidrome db",
   "main": "index.js",
   "scripts": {
@@ -23,7 +23,12 @@
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {
-    "prettier": "^3.3.3"
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/exec": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "9.2.6",
+    "prettier": "^3.3.3",
+    "semantic-release": "^22.0.12"
   },
   "engines": {
     "node": ">=18.0.0"

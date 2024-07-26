@@ -7,11 +7,13 @@ on:
 jobs:
   release:
     name: Release
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
+      with:
+        persist-credentials: false
     - name: Setup Node.js
       uses: actions/setup-node@v1
       with:
@@ -19,9 +21,7 @@ jobs:
     - name: Install pkg globally
       run: npm install -g pkg
     - name: Install dependencies
-      run: npx ci
-    - name: Install semantic-release extra plugins
-      run: npm install -D semantic-release@22.0.12 @semantic-release/exec @semantic-release/changelog @semantic-release/git @semantic-release/github
+      run: npx ci --include=dev
     - name: Release
       env:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}

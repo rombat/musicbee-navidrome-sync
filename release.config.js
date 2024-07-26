@@ -6,7 +6,6 @@ module.exports = {
       preset: 'eslint',
       releaseRules: [
         { scope: 'no-release', release: false },
-        { type: 'chore', release: 'patch' },
         { type: '', release: 'patch' }
       ]
     },
@@ -26,13 +25,17 @@ module.exports = {
     [
       '@semantic-release/exec',
       {
-        publishCmd: 'npm run build ${nextRelease.version}'
+        publishCmd: 'npm run build'
       }
     ],
     [
       '@semantic-release/github',
       {
-        assets: [{ path: '.dist/musicbee-navidrome-sync_${nextRelease.version}.exe', label: 'MBNDS v${nextRelease.version}' }]
+        assets: [
+          {
+            path: '.dist/musicbee-navidrome-sync.exe'
+          }
+        ]
       }
     ],
     [
