@@ -1,0 +1,13 @@
+# [1.2.0](https://github.com/rombat/musicbee-navidrome-sync/compare/v1.1.0...v1.2.0) (2024-07-26)
+
+
+### Bug Fixes
+
+* ann_id removed ([fbcd882](https://github.com/rombat/musicbee-navidrome-sync/commit/fbcd882b2b5ff3ea2cac1c2d2e8dec32577f0982))
+* github actions assets broken ([4541ccc](https://github.com/rombat/musicbee-navidrome-sync/commit/4541ccc404f8affde4d2479a319854db881e341b))
+* handle ann_id being removed ([ed92022](https://github.com/rombat/musicbee-navidrome-sync/commit/ed9202296898e774c816b4c523f025fd9ac007c6))
+
+
+### Features
+
+* autorelease with github actions ([cd32a8b](https://github.com/rombat/musicbee-navidrome-sync/commit/cd32a8b86d9d1ccfc4d2f6e2498b3228cc2f1ce0))
