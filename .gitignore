@@ -5,6 +5,7 @@
 TODO.md
 /musicbee-navidrome-sync.exe
 /dist/
+/.dist/
 /MusicBee_Export.csv
 /navidrome.db
 /backups/

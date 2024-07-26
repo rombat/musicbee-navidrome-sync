@@ -1,0 +1,29 @@
+name: Release
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: 18.x
+    - name: Install pkg globally
+      run: npm install -g pkg
+    - name: Install dependencies
+      run: npx ci
+    - name: Install semantic-release extra plugins
+      run: npm install -D semantic-release@22.0.12 @semantic-release/exec @semantic-release/changelog @semantic-release/git @semantic-release/github
+    - name: Release
+      env:
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      run: npx semantic-release
+

@@ -8,7 +8,7 @@
     "fullSync": "node index.js fullSync",
     "albumsSync": "node index.js albumsSync",
     "artistsSync": "node index.js artistsSync",
-    "build": "pkg ."
+    "build": "sh ./release.sh"
   },
   "author": "rombat",
   "license": "GNU GPL V3.0",
@@ -22,9 +22,13 @@
     "sequelize": "^6.37.3",
     "sqlite3": "^5.1.7"
   },
-  "engines": {
-    "node": ">=16.0.0"
+  "devDependencies": {
+    "prettier": "^3.3.3"
   },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "private": true,
   "bin": "index.js",
   "pkg": {
     "assets": [
@@ -32,11 +36,6 @@
     ],
     "targets": [
       "node18-win-x64"
-    ],
-    "outputPath": "dist",
-    "outputName": "musicbee-navidrome-sync"
-  },
-  "devDependencies": {
-    "prettier": "^3.3.3"
+    ]
   }
 }
