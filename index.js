@@ -51,7 +51,7 @@ program
 program
   .name('musicbee-navidrome-sync')
   .description(
-    'MusicBee to Navidrome Sync (MBNDS) : Tools to sync MusicBee DB to Navidrome DB\nhttps://github.com/rombat/musicbee-navidrome-sync'
+    `MusicBee to Navidrome Sync (MBNDS) : Tools to sync MusicBee DB to Navidrome DB (v${packageJson.version})\nhttps://github.com/rombat/musicbee-navidrome-sync`
   )
   .version(packageJson.version, '-v, --version', 'output the current version');
 
