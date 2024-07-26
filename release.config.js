@@ -32,7 +32,13 @@ module.exports = {
     [
       '@semantic-release/github',
       {
-        assets: [{ path: '.dist/musicbee-navidrome-sync_${nextRelease.version}.exe', label: 'MBNDS v${nextRelease.version}' }]
+        assets: [
+          {
+            path: '.dist/musicbee-navidrome-sync.exe',
+            name: 'musicbee-navidrome-sync_${nextRelease.version}.exe',
+            label: 'MBNDS v${nextRelease.version}'
+          }
+        ]
       }
     ],
     [
