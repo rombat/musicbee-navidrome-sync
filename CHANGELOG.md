@@ -1,3 +1,11 @@
+## [1.2.1](https://github.com/rombat/musicbee-navidrome-sync/compare/v1.2.0...v1.2.1) (2024-07-26)
+
+
+### Bug Fixes
+
+* github actions assets not being published ([34d4a21](https://github.com/rombat/musicbee-navidrome-sync/commit/34d4a214ec8378c3c7785b8feadb312f3cf457be))
+* github actions assets not being published ([f53144c](https://github.com/rombat/musicbee-navidrome-sync/commit/f53144c200aa12cce5973d02f8cf31a2fdb7d87d))
+
 # [1.2.0](https://github.com/rombat/musicbee-navidrome-sync/compare/v1.1.0...v1.2.0) (2024-07-26)
 
 

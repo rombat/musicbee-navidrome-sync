@@ -1,6 +1,6 @@
 {
   "name": "musicbee-navidrome-sync",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "sync ratings and playcount from musicbee db to navidrome db",
   "main": "index.js",
   "scripts": {
