@@ -4,11 +4,11 @@
   "description": "sync ratings and playcount from musicbee db to navidrome db",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "fullSync": "node index.js fullSync",
     "albumsSync": "node index.js albumsSync",
     "artistsSync": "node index.js artistsSync",
-    "build": "sh ./release.sh"
+    "build": "sh ./build.sh",
+    "test": "mocha test/*.js"
   },
   "author": "rombat",
   "license": "GNU GPL V3.0",
@@ -27,6 +27,8 @@
     "@semantic-release/exec": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/github": "9.2.6",
+    "chai": "^4.5.0",
+    "mocha": "^10.7.0",
     "prettier": "^3.3.3",
     "semantic-release": "^22.0.12"
   },
