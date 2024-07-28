@@ -1,5 +1,12 @@
 MBNDS CHANGELOG
 
+## [1.2.2](https://github.com/rombat/musicbee-navidrome-sync/compare/v1.2.1...v1.2.2) (2024-07-28)
+
+
+### Bug Fixes
+
+* ETA being sometimes erratic ([474d840](https://github.com/rombat/musicbee-navidrome-sync/commit/474d8407256066e408783853d36429331b759ecb))
+
 ## [1.2.1](https://github.com/rombat/musicbee-navidrome-sync/compare/v1.2.0...v1.2.1) (2024-07-28)
 
 
