@@ -9,13 +9,13 @@ module.exports = {
         { type: '', release: 'patch' }
       ]
     },
+    '@semantic-release/release-notes-generator',
     [
-      '@semantic-release/release-notes-generator',
+      '@semantic-release/changelog',
       {
         changelogTitle: 'MBNDS CHANGELOG'
       }
     ],
-    '@semantic-release/changelog',
     [
       '@semantic-release/npm',
       {
