@@ -1,3 +1,12 @@
+MBNDS CHANGELOG
+
+## [1.2.1](https://github.com/rombat/musicbee-navidrome-sync/compare/v1.2.0...v1.2.1) (2024-07-28)
+
+
+### Bug Fixes
+
+* path matching to find tracks ([bc70d90](https://github.com/rombat/musicbee-navidrome-sync/commit/bc70d9091a10e0814441a73390307cf6b8bcc9ce))
+
 # [1.2.0](https://github.com/rombat/musicbee-navidrome-sync/compare/v1.1.0...v1.2.0) (2024-07-26)
 
 
