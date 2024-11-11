@@ -25,7 +25,8 @@ MusicBee to Navidrome Sync allows you to:
 
 1. First, you need MusicBee 3.5 with its language set as **English** and [Additional Tagging & Reporting Tools](https://getmusicbee.com/addons/plugins/49/additional-tagging-amp-reporting-tools/) plugin installed
 2. Once it's done, select **Music** under the Collection menu. Then click on **MusicBee** > **Tools** > **Additional Tagging Tools** > **Library Report**... to export library data  in a CSV
-3. Here, you have to select tags that will be exported as headers for your CSV. You need to select **at least** the following ones for MBNDS to work properly:
+3. Click "New Preset" to create a new preset, and give it a name by just by typing anything in the field where "(Auto preset name)" is displayed
+4. You can now add data to your export, by clicking in Add ("Function" select needs to be <Grouping>). Here, you have to select tags that will be exported as headers for your CSV. You need to select **at least** the following ones for MBNDS to work properly:
     * `<File Path>`
     * `<Filename>`
     * `<Folder>`
@@ -35,14 +36,15 @@ MusicBee to Navidrome Sync allows you to:
     * `Rating`
     * `Love`
     * `Skip Count`
-4. Click on **Preview**, MusicBee will scan your entire collection, so it can take some time depending on its size. Once it's done, select CSV in Format (in necessary), click on **Export** and name your file `MusicBee_Export.csv`
-5. **Shutdown Navidrome properly**. This is mandatory to avoid backing up its database while there's still operations going on with it.
-6. Once Navidrome is shut down, backup its database file, `navidrome.db`. Its location is usually in navidrome `/data` folder. You can back up it either by copying it or with sqlite3 CLI if installed (`sqlite3 <path to original file> ".timeout 30000" ".backup <path to backup file>"` for instance). If you back it up by copying, you can also back up `navidrome.db-shm` or `navidrome.db-wal` somewhere too if present, just for precaution.
-7. Download [this repository latest release](https://github.com/rombat/musicbee-navidrome-sync/releases/latest) .exe
-8. Copy **only** `navidrome.db` and `MusicBee_Export.csv` in the same folder as this .exe (or you can provide pathes with CLI, see **Commands** below). 
-9. Run the command you want to run (, see **Commands** below), your database file will be updated
-10. Once it's done, go back to navidrome `/data` folder where you found `navidrome.db` and overwrite it with the updated one. Remove any remaining `navidrome.db-shm` or `navidrome.db-wal` or you will probably get some errors on navidrome startup.
-11. Restart Navidrome, and that's it !
+5. If the option is available, you can tick "Hide preview", it'll scan your library faster
+6. Click on **Preview**, MusicBee will scan your entire collection, so it can take some time depending on its size. Once it's done, select CSV in Format (if necessary), click on **Export** and name your file `MusicBee_Export.csv`
+7. **Shutdown Navidrome properly**. This is mandatory to avoid backing up its database while there's still operations going on with it.
+8. Once Navidrome is shut down, backup its database file, `navidrome.db`. Its location is usually in navidrome `/data` folder. You can back up it either by copying it or with sqlite3 CLI if installed (`sqlite3 <path to original file> ".timeout 30000" ".backup <path to backup file>"` for instance). If you back it up by copying, you can also back up `navidrome.db-shm` or `navidrome.db-wal` somewhere too if present, just for precaution.
+9. Download [this repository latest release](https://github.com/rombat/musicbee-navidrome-sync/releases/latest) .exe
+10. Copy **only** `navidrome.db` and `MusicBee_Export.csv` in the same folder as this .exe (or you can provide pathes with CLI, see **Commands** below). 
+11. Run the command you want to run (, see **Commands** below), your database file will be updated
+12. Once it's done, go back to navidrome `/data` folder where you found `navidrome.db` and overwrite it with the updated one. Remove any remaining `navidrome.db-shm` or `navidrome.db-wal` or you will probably get some errors on navidrome startup.
+13. Restart Navidrome, and that's it !
 
 
 ## ⌨️ Commands
@@ -94,6 +96,7 @@ All commands have these options available:
     * 5.2.*
     * 5.7.*
     * 8.0.*
+    * 9.1.*
   * Navidrome:
     * 0.47.5
     * 0.48.*
