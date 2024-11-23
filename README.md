@@ -96,7 +96,7 @@ All commands have these options available:
     * 5.2.*
     * 5.7.*
     * 8.0.*
-    * 9.1.*
+    * 9.2.*
   * Navidrome:
     * 0.47.5
     * 0.48.*
