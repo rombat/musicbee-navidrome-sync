@@ -103,6 +103,8 @@ All commands have these options available:
     * 0.49.*
     * 0.50.*
     * 0.51.*
+    * 0.52.*
+    * 0.53.*
   
 
 ## ➡️ What's next ?
