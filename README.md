@@ -98,13 +98,7 @@ All commands have these options available:
     * 8.0.*
     * 9.2.*
   * Navidrome:
-    * 0.47.5
-    * 0.48.*
-    * 0.49.*
-    * 0.50.*
-    * 0.51.*
-    * 0.52.*
-    * 0.53.*
+    * 0.47.5 up to 0.54.3
   
 
 ## ➡️ What's next ?
