@@ -39,11 +39,11 @@ MusicBee to Navidrome Sync allows you to:
 5. If the checkbox is available, you can tick **Hide preview**, it'll scan your library faster
 6. Click on **Preview**, MusicBee will scan your entire collection, so it can take some time depending on its size. Once it's done, select `CSV` in **Format** (if necessary), click on **Export** and name your file `MusicBee_Export.csv`
 7. **Shutdown Navidrome properly**. This is mandatory to avoid backing up its database while there's still operations going on with it.
-8. Once Navidrome is shut down, backup its database file, `navidrome.db`. Its location is usually in navidrome `/data` folder. You can back up it either by copying it or with sqlite3 CLI if installed (`sqlite3 <path to original file> ".timeout 30000" ".backup <path to backup file>"` for instance). If you back it up by copying, you can also back up `navidrome.db-shm` or `navidrome.db-wal` somewhere too if present, just for precaution.
+8. Once Navidrome is shut down, backup its database file, `navidrome.db`. Its location is usually in navidrome `/data` folder. You can back up it either by copying it or with sqlite3 CLI if installed (`sqlite3 <path to original file> ".timeout 30000" ".backup <path to backup file>"` for instance). ⚠️ If Navidrome has been properly shut down, you shouldn't have any remaining `navidrome.db-shm` or `navidrome.db-wal` next to `navidrome.db`.
 9. Download [this repository latest release](https://github.com/rombat/musicbee-navidrome-sync/releases/latest) .exe
 10. Copy **only** `navidrome.db` and `MusicBee_Export.csv` in the same folder as this .exe (or you can provide pathes with CLI, see **Commands** below). 
 11. Run the command you want to run (, see **Commands** below), your database file will be updated
-12. Once it's done, go back to navidrome `/data` folder where you found `navidrome.db` and overwrite it with the updated one. Remove any remaining `navidrome.db-shm` or `navidrome.db-wal` or you will probably get some errors on navidrome startup.
+12. Once it's done, go back to navidrome `/data` folder where you found `navidrome.db` and overwrite it with the updated one.
 13. Restart Navidrome, and that's it !
 
 
@@ -98,7 +98,7 @@ All commands have these options available:
     * 8.0.*
     * 9.2.*
   * Navidrome:
-    * 0.47.5 up to 0.54.4
+    * 0.47.5 up to 0.54.5
   
 
 ## ➡️ What's next ?
