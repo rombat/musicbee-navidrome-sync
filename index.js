@@ -34,6 +34,13 @@ const commandLinesOptions = {
 };
 
 program
+  .name('musicbee-navidrome-sync')
+  .description(
+    `MusicBee to Navidrome Sync (MBNDS) : Tools to sync MusicBee DB to Navidrome DB (v${packageJson.version})\nhttps://github.com/rombat/musicbee-navidrome-sync`
+  )
+  .version(packageJson.version, '-v, --version', 'output the current version');
+
+program
   .command('fullSync')
   .description('sync playcounts, track ratings, loved tracks and last played from MusicBee DB to Navidrome DB')
   .option(commandLinesOptions.user.flags, commandLinesOptions.user.description)
@@ -47,13 +54,6 @@ program
     commandLinesOptions.datetimeFormat.defaultValue
   )
   .action(runAction);
-
-program
-  .name('musicbee-navidrome-sync')
-  .description(
-    `MusicBee to Navidrome Sync (MBNDS) : Tools to sync MusicBee DB to Navidrome DB (v${packageJson.version})\nhttps://github.com/rombat/musicbee-navidrome-sync`
-  )
-  .version(packageJson.version, '-v, --version', 'output the current version');
 
 program
   .command('albumsSync')

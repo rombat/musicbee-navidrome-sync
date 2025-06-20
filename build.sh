@@ -4,7 +4,9 @@ rm -rf .dist
 mkdir -p .dist
 cp -r index.js package*.json lib .dist
 cd .dist
-npm install --omit=dev
+
+echo "Installing dependencies..."
+npm install --omit=dev --omit=optional --no-fund --loglevel=error
 
 echo "Building MBNDS exe..."
-pkg -c package.json -t node18-win-x64 index.js -o musicbee-navidrome-sync.exe
+pkg . --compress Brotli -o musicbee-navidrome-sync.exe
