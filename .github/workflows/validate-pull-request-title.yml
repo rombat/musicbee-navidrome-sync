@@ -1,0 +1,84 @@
+name: 'PR Title'
+
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - synchronize
+      - reopened
+
+jobs:
+  auto-format-pr:
+    name: Autoformat PR title if possible
+    runs-on: ubuntu-latest
+    outputs:
+      already_valid: ${{ steps.check_format.outputs.already_valid }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Auto-format PR Title
+        id: check_format
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = context.payload.pull_request;
+            const branchName = pr.head.ref;
+
+            function getTypeFromBranch(branch) {
+              const validTypes = [
+                'build', 'chore', 'ci', 'docs', 'feat', 'fix',
+                'hotfix', 'perf', 'refactor', 'revert', 'style', 'test'
+              ];
+
+              // Extract prefix from branch (e.g., feat/my-branch → feat)
+              const prefix = branch.split('/')[0].toLowerCase();
+              return validTypes.includes(prefix) ? prefix : null;
+            }
+
+            const type = getTypeFromBranch(branchName);
+            if (!type) {
+              console.log('No conventional commit type found in branch name');
+              return;
+            }
+
+            // Check if the title already follows convention
+            const conventionalPattern = /^(build|chore|ci|docs|feat|fix|hotfix|perf|refactor|revert|style|test)(\(.+\))?: .+/;
+            if (conventionalPattern.test(pr.title)) {
+              console.log('PR title already follows conventional commit format');
+              core.setOutput('already_valid', 'true');
+              return;
+            }
+
+            // Format the title if it doesn't follow convention
+            // Extract the actual feature name, removing the prefix
+            let description = pr.title;
+            if (pr.title.toLowerCase().startsWith(branchName.split('/')[0].toLowerCase())) {
+              description = pr.title.substring(pr.title.indexOf('/') + 1).trim();
+            }
+
+            const newTitle = `${type}: ${description}`;
+
+            await github.rest.pulls.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: pr.number,
+              title: newTitle
+            });
+
+            console.log(`Updated PR title to "${newTitle}"`);
+            core.setOutput('already_valid', 'true');
+
+  validation:
+    name: Validate PR title
+    runs-on: ubuntu-latest
+    needs: auto-format-pr
+    if: ${{ needs.auto-format-pr.outputs.already_valid != 'true' }}
+    steps:
+      - uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          wip: false
+          requireScope: false
