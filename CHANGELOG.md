@@ -1,5 +1,12 @@
 MBNDS CHANGELOG
 
+# [1.3.0](https://github.com/rombat/musicbee-navidrome-sync/compare/v1.2.2...v1.3.0) (2025-07-03)
+
+
+### Features
+
+* update node version to 22.17 LTS ([827f25d](https://github.com/rombat/musicbee-navidrome-sync/commit/827f25dac29aaab3685dba1ffa0ad40b00a23e02))
+
 ## [1.2.2](https://github.com/rombat/musicbee-navidrome-sync/compare/v1.2.1...v1.2.2) (2024-07-28)
 
 
