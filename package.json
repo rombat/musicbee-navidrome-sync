@@ -27,7 +27,7 @@
     "@semantic-release/exec": "^7.1.0",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/github": "^11.0.3",
-    "@yao-pkg/pkg": "^6.5.1",
+    "@yao-pkg/pkg": "^6.6.0",
     "chai": "^5.2.0",
     "mocha": "^11.7.0",
     "prettier": "^3.5.3",
