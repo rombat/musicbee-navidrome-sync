@@ -1,5 +1,13 @@
 MBNDS CHANGELOG
 
+# [1.4.0](https://github.com/rombat/musicbee-navidrome-sync/compare/v1.3.0...v1.4.0) (2025-08-15)
+
+
+### Features
+
+* handle new schemas for navidrome versions >= 0.55.0 (tested up to 0.58.0) ([a1a6c0e](https://github.com/rombat/musicbee-navidrome-sync/commit/a1a6c0ebad8b556fc9e0d16a93ac86ed40234776))
+* new relationships following navidrome 0.55.0 BFR ([dec3ada](https://github.com/rombat/musicbee-navidrome-sync/commit/dec3ada8640023816a11d756b4524942622af33a))
+
 # [1.3.0](https://github.com/rombat/musicbee-navidrome-sync/compare/v1.2.2...v1.3.0) (2025-07-03)
 
 
