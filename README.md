@@ -77,6 +77,7 @@ All commands have these options available:
 * `--db <path>` : Navidrome SQLITE .db source file path. By default if not passed, will look for a file named `navidrome.db` in the same folder as `musicbee-navidrome-sync.exe`
 * `-u, --user <user_name>` : selects Navidrome username (by default if not used, the first found user will be used)
 * `--verbose` : verbose debugging
+* `--show-not-found` : output that were not found in Navidrome database (useful for troubleshooting missing tracks without verbose output noise)
 * `-h, --help` : displays help for command
 
 
@@ -89,6 +90,7 @@ All commands have these options available:
   * For tracks: if MusicBee rating is greater than Navidrome rating
   * For albums, if more than half of the album tracks are rated (its rating will be the average of available tracks ratings)
   * For artists, same as album, will be applied only to artists with more than 1 track
+* **Cross-version compatibility**: Automatically detects and works with both old and new Navidrome database schemas
 * Tested with the following versions :
   * MusicBee:
     * 3.5.*
