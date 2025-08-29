@@ -1,5 +1,5 @@
 const { program } = require('commander');
-const { MBNDSynchronizer } = require('./lib/handlers/MBNDSynchronizer.js');
+const { MBNDSynchronizer } = require('./lib/MBNDSynchronizer.js');
 const packageJson = require('./package.json');
 
 const runAction = async (options, command) => {

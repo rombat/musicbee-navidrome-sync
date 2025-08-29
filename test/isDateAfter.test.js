@@ -5,7 +5,7 @@ const utc = require('dayjs/plugin/utc');
 const customParseFormat = require('dayjs/plugin/customParseFormat');
 dayjs.extend(utc);
 dayjs.extend(customParseFormat);
-const { isDateAfter } = require('../lib/helpers/helpers');
+const { isDateAfter } = require('../lib/helpers');
 
 describe('isDateAfter', () => {
   describe('dayjs object vs string comparisons', () => {

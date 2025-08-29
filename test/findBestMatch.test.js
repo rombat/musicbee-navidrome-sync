@@ -1,6 +1,6 @@
 const chai = require('chai');
 const expect = chai.expect;
-const { findBestMatch } = require('../lib/helpers/helpers');
+const { findBestMatch } = require('../lib/helpers');
 
 describe('findBestMatch', () => {
   it('should return the best matching path', () => {

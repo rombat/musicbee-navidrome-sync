@@ -5,7 +5,7 @@ const utc = require('dayjs/plugin/utc');
 const customParseFormat = require('dayjs/plugin/customParseFormat');
 dayjs.extend(utc);
 dayjs.extend(customParseFormat);
-const dbManager = require('../lib/handlers/dbManager');
+const dbManager = require('../lib/Database.js');
 
 describe('Database', () => {
   let database;
