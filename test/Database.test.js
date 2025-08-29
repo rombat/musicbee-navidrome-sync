@@ -7,34 +7,34 @@ dayjs.extend(utc);
 dayjs.extend(customParseFormat);
 const dbManager = require('../lib/handlers/dbManager');
 
-describe('Database', function () {
+describe('Database', () => {
   let database;
 
-  afterEach(function () {
+  afterEach(() => {
     if (database) {
       try {
         database.close();
-      } catch (e) {
+      } catch (_e) {
         // Ignore close errors during cleanup
       }
       database = null;
     }
   });
 
-  describe('constructor and basic connection', function () {
-    it('should create database connection successfully', async function () {
+  describe('constructor and basic connection', () => {
+    it('should create database connection successfully', async () => {
       database = await dbManager.init(':memory:');
       expect(database).to.exist;
       expect(database.constructor.name).to.equal('Database');
     });
 
-    it('should verify connection with test query', async function () {
+    it('should verify connection with test query', async () => {
       database = await dbManager.init(':memory:');
       const result = database.prepare('SELECT 1 as test').get();
       expect(result.test).to.equal(1);
     });
 
-    it('should handle invalid database path gracefully', async function () {
+    it('should handle invalid database path gracefully', async () => {
       try {
         const invalidPath = '/nonexistent/directory/test.db';
         await dbManager.init(invalidPath);
@@ -45,8 +45,8 @@ describe('Database', function () {
     });
   });
 
-  describe('query and prepare methods', function () {
-    beforeEach(async function () {
+  describe('query and prepare methods', () => {
+    beforeEach(async () => {
       database = await dbManager.init(':memory:');
 
       database
@@ -65,58 +65,58 @@ describe('Database', function () {
       database.prepare('INSERT INTO test_table (name, value) VALUES (?, ?)').run('test2', 200);
     });
 
-    it('should execute query with parameters', function () {
+    it('should execute query with parameters', () => {
       const results = database.query('SELECT * FROM test_table WHERE value > ?', [150]);
       expect(results).to.have.length(1);
       expect(results[0].name).to.equal('test2');
       expect(results[0].value).to.equal(200);
     });
 
-    it('should execute query without parameters', function () {
+    it('should execute query without parameters', () => {
       const results = database.query('SELECT COUNT(*) as count FROM test_table');
       expect(results).to.have.length(1);
       expect(results[0].count).to.equal(2);
     });
 
-    it('should prepare and execute statements', function () {
+    it('should prepare and execute statements', () => {
       const stmt = database.prepare('SELECT * FROM test_table WHERE name = ?');
       const result = stmt.get('test1');
       expect(result.name).to.equal('test1');
       expect(result.value).to.equal(100);
     });
 
-    it('should handle empty results', function () {
+    it('should handle empty results', () => {
       const results = database.query('SELECT * FROM test_table WHERE value > ?', [300]);
       expect(results).to.have.length(0);
     });
   });
 
-  describe('schema detection methods', function () {
-    beforeEach(async function () {
+  describe('schema detection methods', () => {
+    beforeEach(async () => {
       database = await dbManager.init(':memory:');
     });
 
-    describe('tableExists', function () {
-      it('should return true for existing table', function () {
+    describe('tableExists', () => {
+      it('should return true for existing table', () => {
         database.prepare('CREATE TABLE existing_table (id INTEGER)').run();
         const exists = database.tableExists('existing_table');
         expect(exists).to.be.true;
       });
 
-      it('should return false for non-existing table', function () {
+      it('should return false for non-existing table', () => {
         const exists = database.tableExists('nonexistent_table');
         expect(exists).to.be.false;
       });
 
-      it('should handle case sensitivity', function () {
+      it('should handle case sensitivity', () => {
         database.prepare('CREATE TABLE CamelCase (id INTEGER)').run();
         const exists = database.tableExists('CamelCase');
         expect(exists).to.be.true;
       });
     });
 
-    describe('getTableSchema', function () {
-      it('should return correct schema for simple table', function () {
+    describe('getTableSchema', () => {
+      it('should return correct schema for simple table', () => {
         database
           .prepare(
             `
@@ -139,7 +139,7 @@ describe('Database', function () {
         expect(schema.optional_field.notNull).to.be.false;
       });
 
-      it('should return correct types', function () {
+      it('should return correct types', () => {
         database
           .prepare(
             `
@@ -158,7 +158,7 @@ describe('Database', function () {
         expect(schema.real_field.type).to.equal('REAL');
       });
 
-      it('should handle default values', function () {
+      it('should handle default values', () => {
         database
           .prepare(
             `
@@ -177,13 +177,13 @@ describe('Database', function () {
       });
     });
 
-    describe('hasLegacyAnnotationSchema', function () {
-      it('should return false when annotation table does not exist', function () {
+    describe('hasLegacyAnnotationSchema', () => {
+      it('should return false when annotation table does not exist', () => {
         const hasLegacy = database.hasLegacyAnnotationSchema();
         expect(hasLegacy).to.be.false;
       });
 
-      it('should return true when annotation table has ann_id column', function () {
+      it('should return true when annotation table has ann_id column', () => {
         database
           .prepare(
             `
@@ -201,7 +201,7 @@ describe('Database', function () {
         expect(hasLegacy).to.be.true;
       });
 
-      it('should return false when annotation table lacks ann_id column', function () {
+      it('should return false when annotation table lacks ann_id column', () => {
         database
           .prepare(
             `
@@ -220,13 +220,13 @@ describe('Database', function () {
       });
     });
 
-    describe('hasMediaFileArtistsTable', function () {
-      it('should return false when table does not exist', function () {
+    describe('hasMediaFileArtistsTable', () => {
+      it('should return false when table does not exist', () => {
         const hasTable = database.hasMediaFileArtistsTable();
         expect(hasTable).to.be.false;
       });
 
-      it('should return true when media_file_artists table exists', function () {
+      it('should return true when media_file_artists table exists', () => {
         database
           .prepare(
             `
@@ -245,13 +245,13 @@ describe('Database', function () {
     });
   });
 
-  describe('upsertAnnotation method', function () {
-    beforeEach(async function () {
+  describe('upsertAnnotation method', () => {
+    beforeEach(async () => {
       database = await dbManager.init(':memory:');
     });
 
-    describe('with modern annotation schema (no ann_id)', function () {
-      beforeEach(function () {
+    describe('with modern annotation schema (no ann_id)', () => {
+      beforeEach(() => {
         database
           .prepare(
             `
@@ -271,7 +271,7 @@ describe('Database', function () {
           .run();
       });
 
-      it('should create new annotation when needsCreate is true', async function () {
+      it('should create new annotation when needsCreate is true', async () => {
         const update = {
           play_count: 5,
           rating: 4,
@@ -294,7 +294,7 @@ describe('Database', function () {
         expect(result.item_type).to.equal('media_file');
       });
 
-      it('should update existing annotation when needsCreate is false', async function () {
+      it('should update existing annotation when needsCreate is false', async () => {
         // Create initial annotation
         database
           .prepare(
@@ -323,7 +323,7 @@ describe('Database', function () {
         expect(result.rating).to.equal(5);
       });
 
-      it('should handle date formatting correctly', async function () {
+      it('should handle date formatting correctly', async () => {
         const testDate = dayjs.utc('2024-01-15 10:30:00');
         const update = {
           play_date: testDate,
@@ -343,12 +343,12 @@ describe('Database', function () {
         expect(result.starred_at).to.equal('2024-01-15 10:30:00');
       });
 
-      it('should handle MusicBee CSV dayjs objects correctly', async function () {
+      it('should handle MusicBee CSV dayjs objects correctly', async () => {
         // Simulate exactly how CSV dates are parsed
         const musicbeeDate = '28/04/2009 07:38';
         const format = 'DD/MM/YYYY HH:mm';
         const csvParsedDate = dayjs(musicbeeDate, format).utc();
-        
+
         const update = {
           play_date: csvParsedDate, // This is a dayjs UTC object
           rating: 5
@@ -368,7 +368,7 @@ describe('Database', function () {
         expect(result.rating).to.equal(5);
       });
 
-      it('should handle different item types', async function () {
+      it('should handle different item types', async () => {
         const update = { play_count: 10, rating: 5 };
 
         // Test album annotation
@@ -397,8 +397,8 @@ describe('Database', function () {
       });
     });
 
-    describe('with legacy annotation schema (with ann_id)', function () {
-      beforeEach(function () {
+    describe('with legacy annotation schema (with ann_id)', () => {
+      beforeEach(() => {
         database
           .prepare(
             `
@@ -418,7 +418,7 @@ describe('Database', function () {
           .run();
       });
 
-      it('should include ann_id when creating new annotation in legacy schema', async function () {
+      it('should include ann_id when creating new annotation in legacy schema', async () => {
         const update = { play_count: 5, rating: 4 };
 
         await database.upsertAnnotation({
@@ -436,7 +436,7 @@ describe('Database', function () {
         expect(result.ann_id.length).to.be.greaterThan(0);
       });
 
-      it('should update existing annotation in legacy schema', async function () {
+      it('should update existing annotation in legacy schema', async () => {
         database
           .prepare(
             `
@@ -463,8 +463,8 @@ describe('Database', function () {
       });
     });
 
-    describe('error scenarios', function () {
-      beforeEach(function () {
+    describe('error scenarios', () => {
+      beforeEach(() => {
         database
           .prepare(
             `
@@ -484,7 +484,7 @@ describe('Database', function () {
           .run();
       });
 
-      it('should handle duplicate key error gracefully during create', async function () {
+      it('should handle duplicate key error gracefully during create', async () => {
         const update = { play_count: 5 };
 
         // First insert should succeed
@@ -511,7 +511,7 @@ describe('Database', function () {
         }
       });
 
-      it('should handle update of non-existent record', async function () {
+      it('should handle update of non-existent record', async () => {
         const update = { play_count: 5 };
 
         // Update non-existent record should not throw but affect 0 rows
@@ -530,8 +530,8 @@ describe('Database', function () {
     });
   });
 
-  describe('cleanup and resource management', function () {
-    it('should close database connection properly', async function () {
+  describe('cleanup and resource management', () => {
+    it('should close database connection properly', async () => {
       database = await dbManager.init(':memory:');
 
       const result = database.prepare('SELECT 1 as test').get();
@@ -547,7 +547,7 @@ describe('Database', function () {
       }
     });
 
-    it('should handle multiple close calls gracefully', async function () {
+    it('should handle multiple close calls gracefully', async () => {
       database = await dbManager.init(':memory:');
 
       database.close();

@@ -2,8 +2,8 @@ const chai = require('chai');
 const expect = chai.expect;
 const { findBestMatch } = require('../lib/helpers/helpers');
 
-describe('findBestMatch', function () {
-  it('should return the best matching path', function () {
+describe('findBestMatch', () => {
+  it('should return the best matching path', () => {
     const mbTrack = {
       filePath: 'V:\\data\\media\\music\\Soundtracks Author\\Carpenter Brut\\Carpenter Brut - 2018 - Leather Teeth',
       filename: '01 - Leather Teeth.mp3'
@@ -23,7 +23,7 @@ describe('findBestMatch', function () {
     expect(result).to.deep.equal(expectedMatch);
   });
 
-  it('should handle paths with different lengths', function () {
+  it('should handle paths with different lengths', () => {
     const mbTrack = { filePath: 'V:\\data\\media\\music\\Short Path', filename: 'File.mp3' };
     const ndTracks = [
       { path: '/music/whatever/longer/length/Short Path/File.mp3' },
@@ -34,7 +34,7 @@ describe('findBestMatch', function () {
     expect(result).to.deep.equal(expectedMatch);
   });
 
-  it('should return undefined if no match is found', function () {
+  it('should return undefined if no match is found', () => {
     const mbTrack = { filePath: 'V:\\data\\media\\music\\Nonexistent Path', filename: 'Nonexistent File.mp3' };
     const ndTracks = [
       {
@@ -48,7 +48,7 @@ describe('findBestMatch', function () {
     expect(result).to.be.undefined;
   });
 
-  it('should return undefined if same filename but no matching path', function () {
+  it('should return undefined if same filename but no matching path', () => {
     const mbTrack = { filePath: 'V:\\data\\media\\music\\Nonexistent Path', filename: '01 - Leather Teeth.mp3' };
     const ndTracks = [
       {
