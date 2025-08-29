@@ -1,6 +1,7 @@
-const chai = require('chai');
-const expect = chai.expect;
-const { findBestMatch } = require('../lib/helpers');
+import assert from 'node:assert';
+import { describe, it } from 'node:test';
+
+import { findBestMatch } from '../lib/helpers.js';
 
 describe('findBestMatch', () => {
   it('should return the best matching path', () => {
@@ -20,7 +21,7 @@ describe('findBestMatch', () => {
       path: '/music/lidarr/Soundtracks Author/Carpenter Brut/Carpenter Brut - 2018 - Leather Teeth/01 - Leather Teeth.mp3'
     };
     const result = findBestMatch(mbTrack, ndTracks);
-    expect(result).to.deep.equal(expectedMatch);
+    assert.deepStrictEqual(result, expectedMatch);
   });
 
   it('should handle paths with different lengths', () => {
@@ -31,7 +32,7 @@ describe('findBestMatch', () => {
     ];
     const expectedMatch = { path: '/music/whatever/longer/length/Short Path/File.mp3' };
     const result = findBestMatch(mbTrack, ndTracks);
-    expect(result).to.deep.equal(expectedMatch);
+    assert.deepStrictEqual(result, expectedMatch);
   });
 
   it('should return undefined if no match is found', () => {
@@ -45,7 +46,7 @@ describe('findBestMatch', () => {
       }
     ];
     const result = findBestMatch(mbTrack, ndTracks);
-    expect(result).to.be.undefined;
+    assert.strictEqual(result, undefined);
   });
 
   it('should return undefined if same filename but no matching path', () => {
@@ -59,6 +60,6 @@ describe('findBestMatch', () => {
       }
     ];
     const result = findBestMatch(mbTrack, ndTracks);
-    expect(result).to.be.undefined;
+    assert.strictEqual(result, undefined);
   });
 });

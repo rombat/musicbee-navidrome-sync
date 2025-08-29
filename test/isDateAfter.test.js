@@ -1,11 +1,13 @@
-const chai = require('chai');
-const expect = chai.expect;
-const dayjs = require('dayjs');
-const utc = require('dayjs/plugin/utc');
-const customParseFormat = require('dayjs/plugin/customParseFormat');
+import assert from 'node:assert';
+import { describe, it } from 'node:test';
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat.js';
+import utc from 'dayjs/plugin/utc.js';
+
 dayjs.extend(utc);
 dayjs.extend(customParseFormat);
-const { isDateAfter } = require('../lib/helpers');
+
+import { isDateAfter } from '../lib/helpers.js';
 
 describe('isDateAfter', () => {
   describe('dayjs object vs string comparisons', () => {
@@ -14,7 +16,7 @@ describe('isDateAfter', () => {
       const stringDate = '2025-01-10 09:00:00';
 
       const result = isDateAfter(dayjsDate, stringDate);
-      expect(result).to.be.true;
+      assert.strictEqual(result, true);
     });
 
     it('should return false when dayjs date is before string date', () => {
@@ -22,7 +24,7 @@ describe('isDateAfter', () => {
       const stringDate = '2025-01-10 09:00:00';
 
       const result = isDateAfter(dayjsDate, stringDate);
-      expect(result).to.be.false;
+      assert.strictEqual(result, false);
     });
 
     it('should return false when dayjs date equals string date', () => {
@@ -30,7 +32,7 @@ describe('isDateAfter', () => {
       const dayjsDate = dayjs(testDate);
 
       const result = isDateAfter(dayjsDate, testDate);
-      expect(result).to.be.false;
+      assert.strictEqual(result, false);
     });
   });
 
@@ -40,7 +42,7 @@ describe('isDateAfter', () => {
       const dateB = '2025-01-10 09:00:00';
 
       const result = isDateAfter(dateA, dateB);
-      expect(result).to.be.true;
+      assert.strictEqual(result, true);
     });
 
     it('should return false when first string date is before second', () => {
@@ -48,7 +50,7 @@ describe('isDateAfter', () => {
       const dateB = '2025-01-10 09:00:00';
 
       const result = isDateAfter(dateA, dateB);
-      expect(result).to.be.false;
+      assert.strictEqual(result, false);
     });
 
     it('should return false when string dates are equal', () => {
@@ -56,41 +58,41 @@ describe('isDateAfter', () => {
       const dateB = '2025-01-10 09:00:00';
 
       const result = isDateAfter(dateA, dateB);
-      expect(result).to.be.false;
+      assert.strictEqual(result, false);
     });
   });
 
   describe('null and undefined handling', () => {
     it('should return false when first date is null', () => {
       const result = isDateAfter(null, '2025-01-10 09:00:00');
-      expect(result).to.be.false;
+      assert.strictEqual(result, false);
     });
 
     it('should return false when first date is undefined', () => {
       const result = isDateAfter(undefined, '2025-01-10 09:00:00');
-      expect(result).to.be.false;
+      assert.strictEqual(result, false);
     });
 
     it('should return true when second date is null and first is valid', () => {
       const dayjsDate = dayjs('2025-01-15 10:30:00');
       const result = isDateAfter(dayjsDate, null);
-      expect(result).to.be.true;
+      assert.strictEqual(result, true);
     });
 
     it('should return true when second date is undefined and first is valid', () => {
       const stringDate = '2025-01-15 10:30:00';
       const result = isDateAfter(stringDate, undefined);
-      expect(result).to.be.true;
+      assert.strictEqual(result, true);
     });
 
     it('should return false when both dates are null', () => {
       const result = isDateAfter(null, null);
-      expect(result).to.be.false;
+      assert.strictEqual(result, false);
     });
 
     it('should return false when both dates are undefined', () => {
       const result = isDateAfter(undefined, undefined);
-      expect(result).to.be.false;
+      assert.strictEqual(result, false);
     });
   });
 
@@ -100,7 +102,7 @@ describe('isDateAfter', () => {
       const stringDate = '2025-01-10 09:00:00';
 
       const result = isDateAfter(dayjsDate, stringDate);
-      expect(result).to.be.true;
+      assert.strictEqual(result, true);
     });
 
     it('should handle milliseconds precision', () => {
@@ -108,7 +110,7 @@ describe('isDateAfter', () => {
       const stringDate = '2025-01-10 09:00:00.000';
 
       const result = isDateAfter(dayjsDate, stringDate);
-      expect(result).to.be.true;
+      assert.strictEqual(result, true);
     });
 
     it('should handle timezone differences', () => {
@@ -116,18 +118,18 @@ describe('isDateAfter', () => {
       const stringDate = '2025-01-15 08:30:00'; // 2 hours earlier
 
       const result = isDateAfter(dayjsDate, stringDate);
-      expect(result).to.be.true;
+      assert.strictEqual(result, true);
     });
 
     it('should return false when first date is empty string', () => {
       const result = isDateAfter('', '2025-01-10 09:00:00');
-      expect(result).to.be.false;
+      assert.strictEqual(result, false);
     });
 
     it('should return true when second date is empty string and first is valid', () => {
       const dayjsDate = dayjs.utc('2025-01-15 10:30:00');
       const result = isDateAfter(dayjsDate, '');
-      expect(result).to.be.true;
+      assert.strictEqual(result, true);
     });
   });
 
@@ -139,7 +141,7 @@ describe('isDateAfter', () => {
       const dbPlayDate = '2025-01-10 09:00:00';
 
       const result = isDateAfter(csvLastPlayed, dbPlayDate);
-      expect(result).to.be.true;
+      assert.strictEqual(result, true);
     });
 
     it('should handle album/artist aggregated dates (string vs string)', () => {
@@ -148,7 +150,7 @@ describe('isDateAfter', () => {
       const albumLastPlayed = '2025-01-10 09:00:00';
 
       const result = isDateAfter(tracksLastPlayed, albumLastPlayed);
-      expect(result).to.be.true;
+      assert.strictEqual(result, true);
     });
 
     it('should handle new annotations (CSV vs null database)', () => {
@@ -157,7 +159,7 @@ describe('isDateAfter', () => {
       const dbPlayDate = null;
 
       const result = isDateAfter(csvLastPlayed, dbPlayDate);
-      expect(result).to.be.true;
+      assert.strictEqual(result, true);
     });
 
     it('should handle timezone differences consistently', () => {
@@ -167,7 +169,7 @@ describe('isDateAfter', () => {
       const dbDate = '2025-01-15 06:30:00'; // 4 hours earlier (different timezone)
 
       const result = isDateAfter(csvDate, dbDate);
-      expect(result).to.be.true; // UTC comparison should be consistent
+      assert.strictEqual(result, true); // UTC comparison should be consistent
     });
 
     it('should handle MusicBee CSV format vs database storage (same date)', () => {
@@ -182,7 +184,7 @@ describe('isDateAfter', () => {
       const dbStoredDate = csvParsedDate.format('YYYY-MM-DD HH:mm:ss');
 
       const result = isDateAfter(csvParsedDate, dbStoredDate);
-      expect(result).to.be.false; // Should be false - same dates
+      assert.strictEqual(result, false); // Should be false - same dates
     });
 
     it('should handle MusicBee CSV format vs database storage (newer CSV)', () => {
@@ -194,7 +196,7 @@ describe('isDateAfter', () => {
       const olderDbDate = '2009-04-28 05:38:00'; // 1 minute earlier in UTC
 
       const result = isDateAfter(csvParsedDate, olderDbDate);
-      expect(result).to.be.true; // Should be true - CSV is newer
+      assert.strictEqual(result, true); // Should be true - CSV is newer
     });
   });
 });

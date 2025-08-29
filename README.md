@@ -77,7 +77,7 @@ All commands have these options available:
 * `--db <path>` : Navidrome SQLITE .db source file path. By default if not passed, will look for a file named `navidrome.db` in the same folder as `musicbee-navidrome-sync.exe`
 * `-u, --user <user_name>` : selects Navidrome username (by default if not used, the first found user will be used)
 * `--verbose` : verbose debugging
-* `--show-not-found` : output that were not found in Navidrome database (useful for troubleshooting missing tracks without verbose output noise)
+* `--show-not-found` : display tracks that were not found in Navidrome database (useful for troubleshooting missing tracks without verbose output noise)
 * `-h, --help` : displays help for command
 
 

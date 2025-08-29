@@ -1,11 +1,14 @@
-const chai = require('chai');
-const expect = chai.expect;
-const dayjs = require('dayjs');
-const utc = require('dayjs/plugin/utc');
-const customParseFormat = require('dayjs/plugin/customParseFormat');
+import assert from 'node:assert';
+import { afterEach, beforeEach, describe, it } from 'node:test';
+
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat.js';
+import utc from 'dayjs/plugin/utc.js';
+
 dayjs.extend(utc);
 dayjs.extend(customParseFormat);
-const dbManager = require('../lib/Database.js');
+
+import * as dbManager from '../lib/Database.js';
 
 describe('Database', () => {
   let database;
@@ -24,23 +27,23 @@ describe('Database', () => {
   describe('constructor and basic connection', () => {
     it('should create database connection successfully', async () => {
       database = await dbManager.init(':memory:');
-      expect(database).to.exist;
-      expect(database.constructor.name).to.equal('Database');
+      assert(database);
+      assert.strictEqual(database.constructor.name, 'Database');
     });
 
     it('should verify connection with test query', async () => {
       database = await dbManager.init(':memory:');
       const result = database.prepare('SELECT 1 as test').get();
-      expect(result.test).to.equal(1);
+      assert.strictEqual(result.test, 1);
     });
 
     it('should handle invalid database path gracefully', async () => {
       try {
         const invalidPath = '/nonexistent/directory/test.db';
         await dbManager.init(invalidPath);
-        expect.fail('Should have thrown an error');
+        assert.fail('Should have thrown an error');
       } catch (error) {
-        expect(error).to.exist;
+        assert(error);
       }
     });
   });
@@ -67,27 +70,27 @@ describe('Database', () => {
 
     it('should execute query with parameters', () => {
       const results = database.query('SELECT * FROM test_table WHERE value > ?', [150]);
-      expect(results).to.have.length(1);
-      expect(results[0].name).to.equal('test2');
-      expect(results[0].value).to.equal(200);
+      assert.strictEqual(results.length, 1);
+      assert.strictEqual(results[0].name, 'test2');
+      assert.strictEqual(results[0].value, 200);
     });
 
     it('should execute query without parameters', () => {
       const results = database.query('SELECT COUNT(*) as count FROM test_table');
-      expect(results).to.have.length(1);
-      expect(results[0].count).to.equal(2);
+      assert.strictEqual(results.length, 1);
+      assert.strictEqual(results[0].count, 2);
     });
 
     it('should prepare and execute statements', () => {
       const stmt = database.prepare('SELECT * FROM test_table WHERE name = ?');
       const result = stmt.get('test1');
-      expect(result.name).to.equal('test1');
-      expect(result.value).to.equal(100);
+      assert.strictEqual(result.name, 'test1');
+      assert.strictEqual(result.value, 100);
     });
 
     it('should handle empty results', () => {
       const results = database.query('SELECT * FROM test_table WHERE value > ?', [300]);
-      expect(results).to.have.length(0);
+      assert.strictEqual(results.length, 0);
     });
   });
 
@@ -100,18 +103,18 @@ describe('Database', () => {
       it('should return true for existing table', () => {
         database.prepare('CREATE TABLE existing_table (id INTEGER)').run();
         const exists = database.tableExists('existing_table');
-        expect(exists).to.be.true;
+        assert.strictEqual(exists, true);
       });
 
       it('should return false for non-existing table', () => {
         const exists = database.tableExists('nonexistent_table');
-        expect(exists).to.be.false;
+        assert.strictEqual(exists, false);
       });
 
       it('should handle case sensitivity', () => {
         database.prepare('CREATE TABLE CamelCase (id INTEGER)').run();
         const exists = database.tableExists('CamelCase');
-        expect(exists).to.be.true;
+        assert.strictEqual(exists, true);
       });
     });
 
@@ -130,13 +133,13 @@ describe('Database', () => {
           .run();
 
         const schema = database.getTableSchema('simple_table');
-        expect(schema).to.have.property('id');
-        expect(schema).to.have.property('name');
-        expect(schema).to.have.property('optional_field');
+        assert('id' in schema);
+        assert('name' in schema);
+        assert('optional_field' in schema);
 
-        expect(schema.id.primaryKey).to.be.true;
-        expect(schema.name.notNull).to.be.true;
-        expect(schema.optional_field.notNull).to.be.false;
+        assert.strictEqual(schema.id.primaryKey, true);
+        assert.strictEqual(schema.name.notNull, true);
+        assert.strictEqual(schema.optional_field.notNull, false);
       });
 
       it('should return correct types', () => {
@@ -153,9 +156,9 @@ describe('Database', () => {
           .run();
 
         const schema = database.getTableSchema('typed_table');
-        expect(schema.int_field.type).to.equal('INTEGER');
-        expect(schema.text_field.type).to.equal('TEXT');
-        expect(schema.real_field.type).to.equal('REAL');
+        assert.strictEqual(schema.int_field.type, 'INTEGER');
+        assert.strictEqual(schema.text_field.type, 'TEXT');
+        assert.strictEqual(schema.real_field.type, 'REAL');
       });
 
       it('should handle default values', () => {
@@ -172,15 +175,15 @@ describe('Database', () => {
           .run();
 
         const schema = database.getTableSchema('default_table');
-        expect(schema.status.defaultValue).to.equal("'active'");
-        expect(schema.count.defaultValue).to.equal('0');
+        assert.strictEqual(schema.status.defaultValue, "'active'");
+        assert.strictEqual(schema.count.defaultValue, '0');
       });
     });
 
     describe('hasLegacyAnnotationSchema', () => {
       it('should return false when annotation table does not exist', () => {
         const hasLegacy = database.hasLegacyAnnotationSchema();
-        expect(hasLegacy).to.be.false;
+        assert.strictEqual(hasLegacy, false);
       });
 
       it('should return true when annotation table has ann_id column', () => {
@@ -198,7 +201,7 @@ describe('Database', () => {
           .run();
 
         const hasLegacy = database.hasLegacyAnnotationSchema();
-        expect(hasLegacy).to.be.true;
+        assert.strictEqual(hasLegacy, true);
       });
 
       it('should return false when annotation table lacks ann_id column', () => {
@@ -216,14 +219,14 @@ describe('Database', () => {
           .run();
 
         const hasLegacy = database.hasLegacyAnnotationSchema();
-        expect(hasLegacy).to.be.false;
+        assert.strictEqual(hasLegacy, false);
       });
     });
 
     describe('hasMediaFileArtistsTable', () => {
       it('should return false when table does not exist', () => {
         const hasTable = database.hasMediaFileArtistsTable();
-        expect(hasTable).to.be.false;
+        assert.strictEqual(hasTable, false);
       });
 
       it('should return true when media_file_artists table exists', () => {
@@ -240,7 +243,7 @@ describe('Database', () => {
           .run();
 
         const hasTable = database.hasMediaFileArtistsTable();
-        expect(hasTable).to.be.true;
+        assert.strictEqual(hasTable, true);
       });
     });
   });
@@ -287,11 +290,11 @@ describe('Database', () => {
         });
 
         const result = database.prepare('SELECT * FROM annotation WHERE user_id = ? AND item_id = ?').get('user1', 'track1');
-        expect(result).to.exist;
-        expect(result.play_count).to.equal(5);
-        expect(result.rating).to.equal(4);
-        expect(result.play_date).to.equal('2024-01-15 10:30:00');
-        expect(result.item_type).to.equal('media_file');
+        assert(result);
+        assert.strictEqual(result.play_count, 5);
+        assert.strictEqual(result.rating, 4);
+        assert.strictEqual(result.play_date, '2024-01-15 10:30:00');
+        assert.strictEqual(result.item_type, 'media_file');
       });
 
       it('should update existing annotation when needsCreate is false', async () => {
@@ -319,8 +322,8 @@ describe('Database', () => {
         });
 
         const result = database.prepare('SELECT * FROM annotation WHERE user_id = ? AND item_id = ?').get('user1', 'track1');
-        expect(result.play_count).to.equal(8);
-        expect(result.rating).to.equal(5);
+        assert.strictEqual(result.play_count, 8);
+        assert.strictEqual(result.rating, 5);
       });
 
       it('should handle date formatting correctly', async () => {
@@ -339,8 +342,8 @@ describe('Database', () => {
         });
 
         const result = database.prepare('SELECT * FROM annotation WHERE user_id = ? AND item_id = ?').get('user1', 'track1');
-        expect(result.play_date).to.equal('2024-01-15 10:30:00');
-        expect(result.starred_at).to.equal('2024-01-15 10:30:00');
+        assert.strictEqual(result.play_date, '2024-01-15 10:30:00');
+        assert.strictEqual(result.starred_at, '2024-01-15 10:30:00');
       });
 
       it('should handle MusicBee CSV dayjs objects correctly', async () => {
@@ -364,8 +367,8 @@ describe('Database', () => {
 
         const result = database.prepare('SELECT * FROM annotation WHERE user_id = ? AND item_id = ?').get('user1', 'track1');
         // Should store the UTC time (which would be 05:38 if local timezone was UTC+2)
-        expect(result.play_date).to.match(/2009-04-28 \d{2}:38:00/); // Time depends on local timezone
-        expect(result.rating).to.equal(5);
+        assert.match(result.play_date, /2009-04-28 \d{2}:38:00/); // Time depends on local timezone
+        assert.strictEqual(result.rating, 5);
       });
 
       it('should handle different item types', async () => {
@@ -392,8 +395,8 @@ describe('Database', () => {
         const albumResult = database.prepare('SELECT * FROM annotation WHERE item_type = ?').get('album');
         const artistResult = database.prepare('SELECT * FROM annotation WHERE item_type = ?').get('artist');
 
-        expect(albumResult.item_id).to.equal('album1');
-        expect(artistResult.item_id).to.equal('artist1');
+        assert.strictEqual(albumResult.item_id, 'album1');
+        assert.strictEqual(artistResult.item_id, 'artist1');
       });
     });
 
@@ -430,10 +433,10 @@ describe('Database', () => {
         });
 
         const result = database.prepare('SELECT * FROM annotation WHERE user_id = ? AND item_id = ?').get('user1', 'track1');
-        expect(result).to.exist;
-        expect(result.ann_id).to.exist;
-        expect(result.ann_id).to.be.a('string');
-        expect(result.ann_id.length).to.be.greaterThan(0);
+        assert(result);
+        assert(result.ann_id);
+        assert.strictEqual(typeof result.ann_id, 'string');
+        assert(result.ann_id.length > 0);
       });
 
       it('should update existing annotation in legacy schema', async () => {
@@ -457,9 +460,9 @@ describe('Database', () => {
         });
 
         const result = database.prepare('SELECT * FROM annotation WHERE ann_id = ?').get('existing-id');
-        expect(result.play_count).to.equal(8);
-        expect(result.rating).to.equal(5);
-        expect(result.ann_id).to.equal('existing-id');
+        assert.strictEqual(result.play_count, 8);
+        assert.strictEqual(result.rating, 5);
+        assert.strictEqual(result.ann_id, 'existing-id');
       });
     });
 
@@ -505,9 +508,9 @@ describe('Database', () => {
             update,
             needsCreate: true
           });
-          expect.fail('Should have thrown duplicate key error');
+          assert.fail('Should have thrown duplicate key error');
         } catch (error) {
-          expect(error.message).to.include('UNIQUE constraint failed');
+          assert(error.message.includes('UNIQUE constraint failed'));
         }
       });
 
@@ -525,7 +528,7 @@ describe('Database', () => {
 
         // Verify no record was created
         const result = database.prepare('SELECT * FROM annotation WHERE item_id = ?').get('nonexistent');
-        expect(result).to.be.undefined;
+        assert.strictEqual(result, undefined);
       });
     });
   });
@@ -535,15 +538,15 @@ describe('Database', () => {
       database = await dbManager.init(':memory:');
 
       const result = database.prepare('SELECT 1 as test').get();
-      expect(result.test).to.equal(1);
+      assert.strictEqual(result.test, 1);
 
       database.close();
 
       try {
         database.prepare('SELECT 1 as test').get();
-        expect.fail('Should have thrown error on closed database');
+        assert.fail('Should have thrown error on closed database');
       } catch (error) {
-        expect(error.message).to.include('database is not open');
+        assert(error.message.includes('database is not open'));
       }
     });
 
@@ -558,7 +561,7 @@ describe('Database', () => {
         database.close();
       } catch (error) {
         // It's acceptable if the second close throws an error
-        expect(error.message).to.include('database is not open');
+        assert(error.message.includes('database is not open'));
       }
     });
   });
