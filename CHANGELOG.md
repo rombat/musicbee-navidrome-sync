@@ -2,6 +2,13 @@ MBNDS CHANGELOG
 
 # [1.5.0](https://github.com/rombat/musicbee-navidrome-sync/compare/v1.4.0...v1.5.0) (2025-08-30)
 
+## Lean release
+
+This release doesn't bring new features (except the `--show-not-found` flag). 
+
+But the project has been completely refactored to reduce memory consumption and increase speed, from 2 to 5 times faster in my tests.
+
+Lots of dependencies have been removed too, to rely more on node native modules, more unit tests added, and it has been converted to ESM to use a more modern JS and make it more future-proof.
 
 ### Bug Fixes
 
