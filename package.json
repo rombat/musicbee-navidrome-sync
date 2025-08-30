@@ -10,7 +10,7 @@
     "artistsSync": "NODE_NO_WARNINGS=1 node index.js artistsSync",
     "build": "sh ./build.sh",
     "build-bundle": "node build.config.js",
-    "test": "NODE_NO_WARNINGS=1 node --test test/*.js"
+    "test": "node --test test/*.js"
   },
   "author": "rombat",
   "license": "GNU GPL V3.0",
