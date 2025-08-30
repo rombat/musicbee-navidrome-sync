@@ -1,5 +1,24 @@
 MBNDS CHANGELOG
 
+# [1.5.0](https://github.com/rombat/musicbee-navidrome-sync/compare/v1.4.0...v1.5.0) (2025-08-30)
+
+
+### Bug Fixes
+
+* semantic-release ESM ([db7d84c](https://github.com/rombat/musicbee-navidrome-sync/commit/db7d84c8902cf55069325aa11e85b0e5e7e3c2ec))
+* test env variable ([b9090f7](https://github.com/rombat/musicbee-navidrome-sync/commit/b9090f7405bfaf34f875cea51709a904d7c0baaa))
+* test env variable ([cc0a031](https://github.com/rombat/musicbee-navidrome-sync/commit/cc0a03185e4eb59454e54bafa49cf04f8cf7639b))
+
+
+### Features
+
+* --show-not-found option added ([048c60d](https://github.com/rombat/musicbee-navidrome-sync/commit/048c60d2ade1aee3c7c08b33b8659f1f9983c4a9))
+* complete refactoring to ESM ([2efa636](https://github.com/rombat/musicbee-navidrome-sync/commit/2efa636451bcced6494557e68330050d06dc6d31))
+* refactor albums and artists with aggregate queries ([94765a1](https://github.com/rombat/musicbee-navidrome-sync/commit/94765a179c2cb5651160e69742e4681ab2c9d3b6))
+* refactored csvtojson to reduce memory usage ([f74fb4a](https://github.com/rombat/musicbee-navidrome-sync/commit/f74fb4a99bec2e2a310a69aa8c31bffd43f62028))
+* removed sequelize/sqlite3 in favor of native node:sqlite ([793d090](https://github.com/rombat/musicbee-navidrome-sync/commit/793d090add5bf6247fcab3de466904e8b79157b2))
+* tests added on PR ([669521c](https://github.com/rombat/musicbee-navidrome-sync/commit/669521c31643b1d26c0ee12b9c18cf3fb32674cd))
+
 # [1.4.0](https://github.com/rombat/musicbee-navidrome-sync/compare/v1.3.0...v1.4.0) (2025-08-15)
 
 
