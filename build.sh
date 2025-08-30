@@ -2,11 +2,14 @@ set -e
 
 rm -rf .dist
 mkdir -p .dist
-cp -r index.js package*.json lib .dist
+
+echo "Installing dependencies for bundling..."
+npm install --no-fund --loglevel=error
+
+echo "Bundling ESM to CommonJS (with all dependencies)..."
+node build.config.js
+
 cd .dist
 
-echo "Installing dependencies..."
-npm install --omit=dev --omit=optional --no-fund --loglevel=error
-
 echo "Building MBNDS exe..."
-pkg . --compress Brotli -o musicbee-navidrome-sync.exe
+npx @yao-pkg/pkg index.cjs --target node22-win-x64 --compress Brotli -o musicbee-navidrome-sync.exe

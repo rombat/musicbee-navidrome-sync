@@ -2,48 +2,38 @@
   "name": "musicbee-navidrome-sync",
   "version": "1.4.0",
   "description": "sync ratings and playcount from musicbee db to navidrome db",
+  "type": "module",
   "main": "index.js",
   "scripts": {
-    "fullSync": "node index.js fullSync",
-    "albumsSync": "node index.js albumsSync",
-    "artistsSync": "node index.js artistsSync",
+    "fullSync": "NODE_NO_WARNINGS=1 node index.js fullSync",
+    "albumsSync": "NODE_NO_WARNINGS=1 node index.js albumsSync",
+    "artistsSync": "NODE_NO_WARNINGS=1 node index.js artistsSync",
     "build": "sh ./build.sh",
-    "test": "mocha test/*.js"
+    "build-bundle": "node build.config.js",
+    "test": "NODE_NO_WARNINGS=1 node --test test/*.js"
   },
   "author": "rombat",
   "license": "GNU GPL V3.0",
   "dependencies": {
-    "camelcase": "^6.3.0",
+    "camelcase": "^8.0.0",
     "cli-progress": "^3.12.0",
     "commander": "^14.0.0",
     "csvtojson": "^2.0.10",
     "dayjs": "^1.11.13",
-    "p-limit": "^3.1.0",
-    "sequelize": "^6.37.7",
-    "sqlite3": "^5.1.7"
+    "p-limit": "^7.1.1"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.2.2",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/exec": "^7.1.0",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/github": "^11.0.3",
     "@yao-pkg/pkg": "^6.6.0",
-    "chai": "^5.2.0",
-    "mocha": "^11.7.0",
-    "prettier": "^3.5.3",
+    "esbuild": "^0.25.9",
     "semantic-release": "^24.2.5"
   },
   "engines": {
     "node": ">=22.17.0 <23.0.0"
   },
-  "private": true,
-  "bin": "index.js",
-  "pkg": {
-    "assets": [
-      "node_modules/**/*"
-    ],
-    "targets": [
-      "node22-win-x64"
-    ]
-  }
+  "private": true
 }

@@ -41,6 +41,7 @@ module.exports = {
     [
       '@semantic-release/git',
       {
+        // biome-ignore lint/suspicious/noTemplateCurlyInString: semantic-release template variables
         message: 'chore(release): set `package.json` to ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}',
         assets: ['package.json', 'CHANGELOG.md']
       }

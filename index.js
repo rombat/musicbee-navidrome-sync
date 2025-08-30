@@ -1,6 +1,6 @@
-const { program } = require('commander');
-const { MBNDSynchronizer } = require('./lib/handlers/MBNDSynchronizer.js');
-const packageJson = require('./package.json');
+import { program } from 'commander';
+import { MBNDSynchronizer } from './lib/MBNDSynchronizer.js';
+import packageJson from './package.json' with { type: 'json' };
 
 const runAction = async (options, command) => {
   const synchronizer = new MBNDSynchronizer(options);
@@ -30,6 +30,10 @@ const commandLinesOptions = {
   verbose: {
     flags: '--verbose',
     description: 'verbose debugging'
+  },
+  showNotFound: {
+    flags: '--show-not-found',
+    description: 'output tracks that were not found in Navidrome database'
   }
 };
 
@@ -46,6 +50,7 @@ program
   .option(commandLinesOptions.user.flags, commandLinesOptions.user.description)
   .option('-f, --first', 'run sync for the first time: add MB playcount to ND playcount')
   .option(commandLinesOptions.verbose.flags, commandLinesOptions.verbose.description)
+  .option(commandLinesOptions.showNotFound.flags, commandLinesOptions.showNotFound.description)
   .option(commandLinesOptions.csv.flags, commandLinesOptions.description, commandLinesOptions.defaultValue)
   .option(commandLinesOptions.db.flags, commandLinesOptions.db.description, commandLinesOptions.db.defaultValue)
   .option(
