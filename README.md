@@ -100,7 +100,7 @@ All commands have these options available:
     * 8.0.*
     * 9.2.*
   * Navidrome:
-    * 0.47.5 up to 0.58.5
+    * 0.47.5 up to 0.59.0
   
 
 ## ➡️ What's next ?
@@ -115,4 +115,5 @@ If you found this tool useful, if it saved you some time, you can buy me a coffe
 I'm more of a tea (or beer >_>) drinker, but I can appreciate a good coffee too.
 
 <a href='https://ko-fi.com/rombat' target='_blank'><img height='40' style='border:0px;height:40px;' src='https://cdn.prod.website-files.com/5c14e387dab576fe667689cf/670f5a02fcf48af59c591185_support_me_on_kofi_dark-p-500.png' border='0' alt='Buy Me a Coffee at ko-fi.com' />
+
 
