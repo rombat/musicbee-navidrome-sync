@@ -10,3 +10,4 @@ TODO.md
 /navidrome.db
 /backups/
 index.cjs
+.history/*
