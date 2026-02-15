@@ -12,4 +12,4 @@ node build.config.js
 cd .dist
 
 echo "Building MBNDS exe..."
-npx @yao-pkg/pkg index.cjs --target node22-win-x64 --compress Brotli -o musicbee-navidrome-sync.exe
+npx @yao-pkg/pkg index.cjs --public --target node22-win-x64 --compress Brotli -o musicbee-navidrome-sync.exe

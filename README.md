@@ -83,7 +83,7 @@ All commands have these options available:
 - A backup of your Navidrome DB is created in a newly created `backups` folder everytime you run a command
 - Updates are only applied when they are more favorable (ex: MusicBee rating > Navidrome rating, MusicBee play date > Navidrome play date...), unless `--force-ratings` is used.
 - Ratings are updated on certain conditions:
-  - For tracks: if MusicBee rating is greater than Navidrome rating
+  - For tracks: if MusicBee rating is greater than Navidrome rating (unless you're using `--force-ratings` option)
   - For albums, if more than half of the album tracks are rated (its rating will be the average of available tracks ratings)
   - For artists, same as album, will be applied only to artists with more than 1 track
 - **Cross-version compatibility**: Automatically detects and works with both old and new Navidrome database schemas
