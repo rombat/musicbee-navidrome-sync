@@ -1,36 +1,36 @@
 export default {
-  branches: ["master"],
+  branches: ['master'],
   plugins: [
-    "@semantic-release/commit-analyzer",
+    '@semantic-release/commit-analyzer',
     {
-      preset: "eslint",
+      preset: 'eslint',
       releaseRules: [
-        { scope: "no-release", release: false },
-        { type: "", release: "patch" },
-      ],
+        { scope: 'no-release', release: false },
+        { type: '', release: 'patch' }
+      ]
     },
-    "@semantic-release/release-notes-generator",
+    '@semantic-release/release-notes-generator',
     [
-      "@semantic-release/npm",
+      '@semantic-release/npm',
       {
-        npmPublish: false,
-      },
+        npmPublish: false
+      }
     ],
     [
-      "@semantic-release/exec",
+      '@semantic-release/exec',
       {
-        publishCmd: "npm run build",
-      },
+        publishCmd: 'npm run build'
+      }
     ],
     [
-      "@semantic-release/github",
+      '@semantic-release/github',
       {
         assets: [
           {
-            path: ".dist/musicbee-navidrome-sync.exe",
-          },
-        ],
-      },
-    ],
-  ],
+            path: '.dist/musicbee-navidrome-sync.exe'
+          }
+        ]
+      }
+    ]
+  ]
 };
