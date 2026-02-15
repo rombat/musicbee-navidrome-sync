@@ -34,6 +34,10 @@ const commandLinesOptions = {
   showNotFound: {
     flags: '--show-not-found',
     description: 'output tracks that were not found in Navidrome database'
+  },
+  forceRatings: {
+    flags: '--force-ratings',
+    description: 'allow forcing rating updates even if they are lower than the rating already saved'
   }
 };
 
@@ -51,6 +55,7 @@ program
   .option('-f, --first', 'run sync for the first time: add MB playcount to ND playcount')
   .option(commandLinesOptions.verbose.flags, commandLinesOptions.verbose.description)
   .option(commandLinesOptions.showNotFound.flags, commandLinesOptions.showNotFound.description)
+  .option(commandLinesOptions.forceRatings.flags, commandLinesOptions.forceRatings.description)
   .option(commandLinesOptions.csv.flags, commandLinesOptions.description, commandLinesOptions.defaultValue)
   .option(commandLinesOptions.db.flags, commandLinesOptions.db.description, commandLinesOptions.db.defaultValue)
   .option(
@@ -65,6 +70,7 @@ program
   .description('update all albums playcounts and ratings based on existing Navidrome DB')
   .option(commandLinesOptions.user.flags, commandLinesOptions.user.description)
   .option(commandLinesOptions.verbose.flags, commandLinesOptions.verbose.description)
+  .option(commandLinesOptions.forceRatings.flags, commandLinesOptions.forceRatings.description)
   .option(commandLinesOptions.db.flags, commandLinesOptions.db.description, commandLinesOptions.db.defaultValue)
   .action(runAction);
 
@@ -73,6 +79,7 @@ program
   .description('update all artists playcounts and ratings based on existing Navidrome DB')
   .option(commandLinesOptions.user.flags, commandLinesOptions.user.description)
   .option(commandLinesOptions.verbose.flags, commandLinesOptions.verbose.description)
+  .option(commandLinesOptions.forceRatings.flags, commandLinesOptions.forceRatings.description)
   .option(commandLinesOptions.db.flags, commandLinesOptions.db.description, commandLinesOptions.db.defaultValue)
   .action(runAction);
 

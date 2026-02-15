@@ -1,6 +1,6 @@
 {
   "name": "musicbee-navidrome-sync",
-  "version": "1.5.0",
+  "version": "0.0.0-semantically-released",
   "description": "sync ratings and playcount from musicbee db to navidrome db",
   "type": "module",
   "main": "index.js",
@@ -18,9 +18,8 @@
     "camelcase": "^8.0.0",
     "cli-progress": "^3.12.0",
     "commander": "^14.0.0",
-    "csvtojson": "^2.0.10",
-    "dayjs": "^1.11.13",
-    "p-limit": "^7.1.1"
+    "csvtojson": "^2.0.14",
+    "dayjs": "^1.11.13"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.2",
@@ -28,7 +27,7 @@
     "@semantic-release/exec": "^7.1.0",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/github": "^11.0.3",
-    "@yao-pkg/pkg": "^6.6.0",
+    "@yao-pkg/pkg": "^6.13.1",
     "esbuild": "^0.25.9",
     "semantic-release": "^24.2.5"
   },

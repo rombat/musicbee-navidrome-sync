@@ -11,12 +11,6 @@ export default {
     },
     '@semantic-release/release-notes-generator',
     [
-      '@semantic-release/changelog',
-      {
-        changelogTitle: 'MBNDS CHANGELOG'
-      }
-    ],
-    [
       '@semantic-release/npm',
       {
         npmPublish: false
@@ -36,14 +30,6 @@ export default {
             path: '.dist/musicbee-navidrome-sync.exe'
           }
         ]
-      }
-    ],
-    [
-      '@semantic-release/git',
-      {
-        // biome-ignore lint/suspicious/noTemplateCurlyInString: semantic-release template variables
-        message: 'chore(release): set `package.json` to ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}',
-        assets: ['package.json', 'CHANGELOG.md']
       }
     ]
   ]

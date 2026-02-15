@@ -7,7 +7,7 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": ["**", "!**/package-lock.json", "!.dist"]
+    "includes": ["**", "!**/package-lock.json", "!.dist", "!.history"]
   },
   "formatter": {
     "enabled": true,
