@@ -533,6 +533,37 @@ describe('Database', () => {
     });
   });
 
+  describe('executeTransaction', () => {
+    beforeEach(async () => {
+      database = await dbManager.init(':memory:');
+      database.prepare('CREATE TABLE trans_test (id INTEGER PRIMARY KEY, val TEXT)').run();
+    });
+
+    it('should commit multiple operations on success', async () => {
+      await database.executeTransaction(async () => {
+        database.prepare('INSERT INTO trans_test (val) VALUES (?)').run('a');
+        database.prepare('INSERT INTO trans_test (val) VALUES (?)').run('b');
+      });
+
+      const results = database.query('SELECT * FROM trans_test');
+      assert.strictEqual(results.length, 2);
+    });
+
+    it('should rollback operations on failure', async () => {
+      try {
+        await database.executeTransaction(async () => {
+          database.prepare('INSERT INTO trans_test (val) VALUES (?)').run('c');
+          throw new Error('Transaction failure');
+        });
+      } catch (error) {
+        assert.strictEqual(error.message, 'Transaction failure');
+      }
+
+      const results = database.query('SELECT * FROM trans_test');
+      assert.strictEqual(results.length, 0);
+    });
+  });
+
   describe('cleanup and resource management', () => {
     it('should close database connection properly', async () => {
       database = await dbManager.init(':memory:');
