@@ -1,50 +1,36 @@
 export default {
-  branches: ['master'],
+  branches: ["master"],
   plugins: [
-    '@semantic-release/commit-analyzer',
+    "@semantic-release/commit-analyzer",
     {
-      preset: 'eslint',
+      preset: "eslint",
       releaseRules: [
-        { scope: 'no-release', release: false },
-        { type: '', release: 'patch' }
-      ]
+        { scope: "no-release", release: false },
+        { type: "", release: "patch" },
+      ],
     },
-    '@semantic-release/release-notes-generator',
+    "@semantic-release/release-notes-generator",
     [
-      '@semantic-release/changelog',
+      "@semantic-release/npm",
       {
-        changelogTitle: 'MBNDS CHANGELOG'
-      }
+        npmPublish: false,
+      },
     ],
     [
-      '@semantic-release/npm',
+      "@semantic-release/exec",
       {
-        npmPublish: false
-      }
+        publishCmd: "npm run build",
+      },
     ],
     [
-      '@semantic-release/exec',
-      {
-        publishCmd: 'npm run build'
-      }
-    ],
-    [
-      '@semantic-release/github',
+      "@semantic-release/github",
       {
         assets: [
           {
-            path: '.dist/musicbee-navidrome-sync.exe'
-          }
-        ]
-      }
+            path: ".dist/musicbee-navidrome-sync.exe",
+          },
+        ],
+      },
     ],
-    [
-      '@semantic-release/git',
-      {
-        // biome-ignore lint/suspicious/noTemplateCurlyInString: semantic-release template variables
-        message: 'chore(release): set `package.json` to ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}',
-        assets: ['package.json', 'CHANGELOG.md']
-      }
-    ]
-  ]
+  ],
 };
