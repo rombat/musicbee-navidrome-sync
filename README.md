@@ -81,9 +81,9 @@ All commands have these options available:
 
 - This is a **one way sync** only, from MusicBee to Navidrome. Can't do the other way.
 - A backup of your Navidrome DB is created in a newly created `backups` folder everytime you run a command
-- Updates are only applied when they are more favorable (ex: MusicBee rating > Navidrome rating, MusicBee play date > Navidrome play date...), unless `--force-ratings` is used.
+- Updates are only applied when they are more favorable. ex: MusicBee rating > Navidrome rating (unless `--force-ratings` option is used), MusicBee play date > Navidrome play date...
 - Ratings are updated on certain conditions:
-  - For tracks: if MusicBee rating is greater than Navidrome rating (unless you're using `--force-ratings` option)
+  - For tracks: if MusicBee rating is greater than Navidrome rating
   - For albums, if more than half of the album tracks are rated (its rating will be the average of available tracks ratings)
   - For artists, same as album, will be applied only to artists with more than 1 track
 - **Cross-version compatibility**: Automatically detects and works with both old and new Navidrome database schemas
@@ -109,3 +109,4 @@ If you found this tool useful, if it saved you some time, you can buy me a coffe
 I'm more of a tea (or beer >\_>) drinker, but I can appreciate a good coffee too.
 
 <a href='https://ko-fi.com/rombat' target='_blank'><img height='40' style='border:0px;height:40px;' src='https://cdn.prod.website-files.com/5c14e387dab576fe667689cf/670f5a02fcf48af59c591185_support_me_on_kofi_dark-p-500.png' border='0' alt='Buy Me a Coffee at ko-fi.com' />
+
