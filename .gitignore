@@ -11,3 +11,4 @@ TODO.md
 /backups/
 index.cjs
 .history/*
+*.tsbuildinfo
