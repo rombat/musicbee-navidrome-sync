@@ -3,7 +3,7 @@ import path from 'node:path';
 import camelCase from 'camelcase';
 import cliProgress from 'cli-progress';
 import csv2json from 'csvtojson';
-import dayjs from 'dayjs';
+import dayjs, { type Dayjs } from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat.js';
 import duration from 'dayjs/plugin/duration.js';
 import relativeTime from 'dayjs/plugin/relativeTime.js';
@@ -15,11 +15,111 @@ dayjs.extend(duration);
 dayjs.extend(relativeTime);
 
 import packageJson from '../package.json' with { type: 'json' };
+import type { AnnotationUpdate, Database } from './Database.js';
 import * as dbManager from './Database.js';
 import { findBestMatch, isDateAfter } from './helpers.js';
 
+export type RawSyncOptions = {
+  first?: boolean;
+  forceRatings?: boolean;
+  showNotFound?: boolean;
+  verbose?: boolean;
+  csv?: string;
+  db?: string;
+  user?: string;
+  datetimeFormat?: string;
+};
+
+type SyncOptions = {
+  first: boolean;
+  forceRatings: boolean;
+  showNotFound: boolean;
+  verbose: boolean;
+  csv?: string;
+  db?: string;
+  user?: string;
+  datetimeFormat?: string;
+};
+
+type SyncPaths = {
+  backupFilePath: string | undefined;
+  defaultWorkingDirectory: string;
+  defaultDbFileName: string;
+  defaultCsvFileName: string;
+  csvFilePath: string | undefined;
+  dbFilePath: string | undefined;
+};
+
+type CsvTrack = {
+  filePath: string;
+  filename: string;
+  folder: string;
+  title: string;
+  lastPlayed: Dayjs | null;
+  playCount: number;
+  rating: number;
+  love: number;
+  skipCount: number;
+  [key: string]: unknown;
+};
+
+type NavidromeUser = {
+  id: string;
+  user_name: string;
+  [key: string]: unknown;
+};
+
+type FoundTrackRow = {
+  id: string;
+  path: string;
+  title: string;
+  album: string;
+  album_id: string;
+  artist_id: string;
+  album_artist: string;
+  album_artist_id: string;
+  annotation_play_count: number | null;
+  annotation_play_date: string | null;
+  annotation_rating: number | null;
+  annotation_starred: number | null;
+  annotation_starred_at: string | null;
+};
+
+type AlbumWithStatsRow = {
+  album_id: string;
+  name: string;
+  total_tracks: number;
+  total_tracks_play_count: number;
+  tracks_rated_count: number;
+  tracks_rating_sum: number;
+  tracks_last_played: string | null;
+  album_rating: number | null;
+  album_play_count: number | null;
+  album_last_played: string | null;
+};
+
+type ArtistWithStatsRow = {
+  artist_id: string;
+  name: string;
+  total_tracks: number;
+  total_tracks_play_count: number;
+  tracks_rated_count: number;
+  tracks_rating_sum: number;
+  tracks_last_played: string | null;
+  artist_rating: number | null;
+  artist_play_count: number | null;
+  artist_last_played: string | null;
+};
+
 class MBNDSynchronizer {
-  constructor(options) {
+  private readonly REQUIRED_HEADERS: readonly string[];
+  private paths: SyncPaths;
+  private options: SyncOptions;
+  private start: Dayjs;
+  private database!: Database;
+  private user!: NavidromeUser;
+
+  constructor(options: RawSyncOptions) {
     this.REQUIRED_HEADERS = [
       '<File path>',
       '<Filename>',
@@ -55,10 +155,8 @@ class MBNDSynchronizer {
 
   /**
    * check/set files paths, backup DB file, connect to it and get navidrome user
-   * @param action
-   * @returns {void}
    */
-  initiate(action) {
+  initiate(action: string): void {
     const { options, paths } = this;
     if (Object.keys(options).length) {
       console.log(`MBNDS v${packageJson.version} running with following options:`, options);
@@ -88,16 +186,15 @@ class MBNDSynchronizer {
     this.user = this.getUser();
   }
 
-  /**
-   * by default, get the first user found in ND DB if no option passed
-   * @returns {Object}
-   */
-  getUser() {
+  getUser(): NavidromeUser {
     const { database, options } = this;
 
-    const user = options.user
-      ? database.prepare('SELECT * FROM user WHERE user_name = ?').get(options.user)
-      : database.prepare('SELECT * FROM user LIMIT 1').get();
+    // TODO : don't really need to select the whole user
+    const user = (
+      options.user
+        ? database.prepare('SELECT * FROM user WHERE user_name = ?').get(options.user)
+        : database.prepare('SELECT * FROM user LIMIT 1').get()
+    ) as NavidromeUser | undefined;
 
     if (!user) {
       throw new Error(`user ${options.user ?? ''} not found`);
@@ -106,28 +203,31 @@ class MBNDSynchronizer {
     return user;
   }
 
-  backupDbFile() {
+  backupDbFile(): void {
     const { paths } = this;
     if (!fs.existsSync('./backups')) {
       fs.mkdirSync('./backups');
     }
     paths.backupFilePath = `./backups/navidrome_${dayjs().format('YYYY-MM-DD_HH-mm-ss')}_backup.db`;
+    if (!paths.dbFilePath) {
+      throw new Error('DB file path not set');
+    }
     fs.copyFileSync(paths.dbFilePath, paths.backupFilePath);
     console.log(`DB has been backed up to ${paths.backupFilePath}`);
   }
 
-  restoreDbFile() {
+  restoreDbFile(): void {
     const { paths } = this;
+    if (!paths.backupFilePath || !paths.dbFilePath) {
+      throw new Error('Backup or DB file path not set');
+    }
     fs.copyFileSync(paths.backupFilePath, paths.dbFilePath);
     try {
       this.database.close();
     } catch (_e) {}
-    for (const ext of ['-shm', '-wal']) {
-      fs.rmSync(`${paths.dbFilePath}${ext}`, { force: true });
-    }
   }
 
-  async run(action) {
+  async run(action: string): Promise<void> {
     this.initiate(action);
 
     try {
@@ -150,7 +250,7 @@ class MBNDSynchronizer {
     }
   }
 
-  globalErrorHander(e) {
+  globalErrorHander(e: unknown): never {
     console.error('An error as occured, restoring DB file...');
     this.restoreDbFile();
     throw e;
@@ -158,18 +258,15 @@ class MBNDSynchronizer {
 
   /**
    * Unified CSV processing function that can either count or process tracks
-   * @param {("count"|"process")} mode
-   * @param {function|null} [onTrack = null] - callback for handling eligible tracks
-   * @returns {Promise<number>} - number of processed tracks
    */
-  async processCsv(mode, onTrack = null) {
+  async processCsv(mode: 'count' | 'process', onTrack: ((track: CsvTrack) => void) | null = null): Promise<number> {
     const { options: syncOptions, paths } = this;
     let headerProcessed = false;
     let processedCount = 0;
 
-    const colParser = {
+    const colParser: Record<string, string | ((item: string) => unknown)> = {
       playCount: 'number',
-      rating: item => {
+      rating: (item: string) => {
         let rating = Number.parseInt(item, 10);
         if (!rating) {
           return 0;
@@ -179,9 +276,9 @@ class MBNDSynchronizer {
         }
         return rating;
       },
-      lastPlayed: item =>
+      lastPlayed: (item: string) =>
         dayjs(item, syncOptions.datetimeFormat).isValid() ? dayjs(item, syncOptions.datetimeFormat).utc() : null,
-      love: item => (item?.trim() ? 1 : 0)
+      love: (item: string) => (item?.trim() ? 1 : 0)
     };
 
     if (mode === 'process') {
@@ -192,9 +289,9 @@ class MBNDSynchronizer {
       colParser.albumRating = 'number';
       colParser.playCount = 'number';
       colParser.skipCount = 'number';
-      colParser.dateAdded = item =>
+      colParser.dateAdded = (item: string) =>
         dayjs(item, syncOptions.datetimeFormat).isValid() ? dayjs(item, syncOptions.datetimeFormat).utc() : null;
-      colParser.dateModified = item =>
+      colParser.dateModified = (item: string) =>
         dayjs(item, syncOptions.datetimeFormat).isValid() ? dayjs(item, syncOptions.datetimeFormat).utc() : null;
     }
 
@@ -202,7 +299,7 @@ class MBNDSynchronizer {
       delimiter: 'auto',
       colParser
     })
-      .preFileLine((fileLineString, lineIdx) => {
+      .preFileLine((fileLineString: string, lineIdx: number) => {
         if (lineIdx === 0 && !headerProcessed) {
           this.REQUIRED_HEADERS.forEach(header => {
             if (!camelCase(fileLineString).includes(camelCase(header))) {
@@ -214,7 +311,7 @@ class MBNDSynchronizer {
         }
         return fileLineString;
       })
-      .subscribe(async track => {
+      .subscribe(async (track: CsvTrack) => {
         const trackEligible = !!track.playCount || !!track.rating || !!track.lastPlayed || !!track.love;
         if (!trackEligible) {
           return;
@@ -228,12 +325,12 @@ class MBNDSynchronizer {
         onTrack(track);
         processedCount++;
       })
-      .fromFile(paths.csvFilePath);
+      .fromFile(paths.csvFilePath as string);
 
     return processedCount;
   }
 
-  async fullSync() {
+  async fullSync(): Promise<void> {
     const { options, user, database, paths } = this;
 
     let trackUpdatedCount = 0;
@@ -244,7 +341,7 @@ class MBNDSynchronizer {
 
     console.log('Processing tracks...');
 
-    let progressBar = null;
+    let progressBar: cliProgress.SingleBar | null = null;
     if (!options.verbose) {
       progressBar = new cliProgress.SingleBar(
         { etaBuffer: Math.max(100, Math.floor(totalEligibleTracks * 0.1)) },
@@ -253,14 +350,13 @@ class MBNDSynchronizer {
       progressBar.start(totalEligibleTracks, 0);
     }
 
-    await this.database.executeTransaction(
-      async () =>
-        await this.processCsv('process', track => {
-          progressBar?.increment();
+    await this.database.executeTransaction(async () => {
+      await this.processCsv('process', (track: CsvTrack) => {
+        progressBar?.increment();
 
-          const foundTracks = database.query(
-            `
-          SELECT 
+        const foundTracks = database.query<FoundTrackRow>(
+          `
+          SELECT
             mf.id,
             mf.path,
             mf.title,
@@ -276,77 +372,77 @@ class MBNDSynchronizer {
             a.starred_at as annotation_starred_at
           FROM media_file mf
           LEFT JOIN annotation a ON (
-            a.item_id = mf.id 
-            AND a.item_type = 'media_file' 
+            a.item_id = mf.id
+            AND a.item_type = 'media_file'
             AND a.user_id = ?
           )
-          WHERE mf.title = ? 
+          WHERE mf.title = ?
           AND mf.path LIKE ?
         `,
-            [user.id, track.title, `%${track.filename}`]
-          );
-          const foundTrack = findBestMatch(track, foundTracks);
+          [user.id, track.title, `%${track.filename}`]
+        );
+        const foundTrack = findBestMatch(track, foundTracks);
 
-          if (!foundTrack) {
-            notFoundTracksCount++;
-            if (options.verbose || options.showNotFound) {
-              console.error(`track not found. path: ${track.filePath} | filename: ${track.filename}`);
-            }
-            return;
+        if (!foundTrack) {
+          notFoundTracksCount++;
+          if (options.verbose || options.showNotFound) {
+            console.error(`track not found. path: ${track.filePath} | filename: ${track.filename}`);
           }
+          return;
+        }
 
-          if (options.verbose) {
-            console.log(`processing track: ${track.filePath}`);
+        if (options.verbose) {
+          console.log(`processing track: ${track.filePath}`);
+        }
+
+        const hasExistingAnnotation = foundTrack.annotation_play_count !== null || foundTrack.annotation_rating !== null;
+
+        const annotation = {
+          play_count: foundTrack.annotation_play_count || 0,
+          play_date: foundTrack.annotation_play_date,
+          rating: foundTrack.annotation_rating || 0,
+          starred: foundTrack.annotation_starred || 0,
+          starred_at: foundTrack.annotation_starred_at
+        };
+
+        const update: AnnotationUpdate = {};
+        if (track.rating !== annotation.rating && (options.forceRatings || track.rating > annotation.rating)) {
+          update.rating = track.rating;
+        }
+        if (track.love > annotation.starred) {
+          update.starred = track.love;
+          update.starred_at = track.lastPlayed || null;
+        }
+        if (track.playCount !== annotation.play_count) {
+          if (track.playCount > annotation.play_count) {
+            update.play_count = track.playCount;
           }
-
-          const hasExistingAnnotation = foundTrack.annotation_play_count !== null || foundTrack.annotation_rating !== null;
-
-          const annotation = {
-            play_count: foundTrack.annotation_play_count || 0,
-            play_date: foundTrack.annotation_play_date,
-            rating: foundTrack.annotation_rating || 0,
-            starred: foundTrack.annotation_starred || 0,
-            starred_at: foundTrack.annotation_starred_at
-          };
-
-          const update = {};
-          if (track.rating !== annotation.rating && (options.forceRatings || track.rating > annotation.rating)) {
-            update.rating = track.rating;
+          if (options.first && annotation.play_count + track.playCount > annotation.play_count) {
+            update.play_count = annotation.play_count + track.playCount;
           }
-          if (track.love > annotation.starred) {
-            update.starred = track.love;
-            update.starred_at = track.lastPlayed || null;
-          }
-          if (track.playCount !== annotation.play_count) {
-            if (track.playCount > annotation.play_count) {
-              update.play_count = track.playCount;
-            }
-            if (options.first && annotation.play_count + track.playCount > annotation.play_count) {
-              update.play_count = annotation.play_count + track.playCount;
-            }
-          }
+        }
 
-          if (isDateAfter(track.lastPlayed, annotation.play_date)) {
-            update.play_date = track.lastPlayed;
-            if (!annotation.play_count && !update.play_count && !track.skipCount && !track.playCount) {
-              update.play_count = 1;
-            }
+        if (isDateAfter(track.lastPlayed, annotation.play_date)) {
+          update.play_date = track.lastPlayed;
+          if (!annotation.play_count && !update.play_count && !track.skipCount && !track.playCount) {
+            update.play_count = 1;
           }
+        }
 
-          if (!Object.keys(update).length) {
-            return;
-          }
+        if (!Object.keys(update).length) {
+          return;
+        }
 
-          database.upsertAnnotation({
-            itemType: 'media_file',
-            userId: user.id,
-            itemId: foundTrack.id,
-            update,
-            needsCreate: !hasExistingAnnotation
-          });
-          trackUpdatedCount++;
-        })
-    );
+        database.upsertAnnotation({
+          itemType: 'media_file',
+          userId: user.id,
+          itemId: foundTrack.id,
+          update,
+          needsCreate: !hasExistingAnnotation
+        });
+        trackUpdatedCount++;
+      });
+    });
 
     progressBar?.stop();
     console.log(`${trackUpdatedCount} tracks updated`);
@@ -360,10 +456,7 @@ class MBNDSynchronizer {
     await this.artistsSync();
   }
 
-  /**
-   * Get album statistics with existing annotations in one efficient query
-   */
-  getAlbumsWithStats(user, albumIds = null) {
+  getAlbumsWithStats(user: NavidromeUser, albumIds: string[] | null = null): AlbumWithStatsRow[] {
     const { database } = this;
 
     let whereClause = '';
@@ -386,8 +479,8 @@ class MBNDSynchronizer {
       FROM album a
       INNER JOIN media_file mf ON mf.album_id = a.id
       LEFT JOIN annotation ta ON (
-        ta.item_id = mf.id 
-        AND ta.item_type = 'media_file' 
+        ta.item_id = mf.id
+        AND ta.item_type = 'media_file'
         AND ta.user_id = ?
       )
       LEFT JOIN annotation aa ON (
@@ -400,21 +493,15 @@ class MBNDSynchronizer {
       HAVING total_tracks_play_count > 0 OR tracks_rated_count > 0 OR tracks_last_played IS NOT NULL
     `;
 
-    const params = [user.id, user.id];
+    const params: (string | number)[] = [user.id, user.id];
     if (albumIds?.length) {
       params.push(...albumIds);
     }
 
-    const results = database.query(query, params);
-
-    return results;
+    return database.query<AlbumWithStatsRow>(query, params);
   }
 
-  /**
-   * @param {Set<string>|null} albumsToUpdate
-   * @returns {Promise<number>}
-   */
-  async albumsSync(albumsToUpdate = null) {
+  async albumsSync(albumsToUpdate: Set<string> | null = null): Promise<number> {
     const { options, user, database } = this;
 
     console.log('Processing albums...');
@@ -442,7 +529,7 @@ class MBNDSynchronizer {
 
         const needsCreate = albumData.album_play_count === null && albumData.album_rating === null;
 
-        const update = {};
+        const update: AnnotationUpdate = {};
         const currentPlayCount = albumData.album_play_count || 0;
         const currentRating = albumData.album_rating || 0;
         const currentPlayDate = albumData.album_last_played;
@@ -487,10 +574,7 @@ class MBNDSynchronizer {
     return albumUpdatedCount;
   }
 
-  /**
-   * Get artist statistics with existing annotations - handles both old and new schema
-   */
-  getArtistsWithStats(user, artistIds = null) {
+  getArtistsWithStats(user: NavidromeUser, artistIds: string[] | null = null): ArtistWithStatsRow[] {
     const { database } = this;
 
     let whereClause = '';
@@ -513,8 +597,8 @@ class MBNDSynchronizer {
           joinClause: `INNER JOIN media_file_artists mfa ON (mfa.artist_id = ar.id AND mfa.role = 'artist')`,
           countColumn: 'COUNT(mfa.media_file_id) AS total_tracks',
           annotationJoin: `LEFT JOIN annotation ta ON (
-            ta.item_id = mfa.media_file_id 
-            AND ta.item_type = 'media_file' 
+            ta.item_id = mfa.media_file_id
+            AND ta.item_type = 'media_file'
             AND ta.user_id = ?
           )`
         }
@@ -522,8 +606,8 @@ class MBNDSynchronizer {
           joinClause: 'INNER JOIN media_file mf ON mf.artist_id = ar.id',
           countColumn: 'COUNT(mf.id) AS total_tracks',
           annotationJoin: `LEFT JOIN annotation ta ON (
-            ta.item_id = mf.id 
-            AND ta.item_type = 'media_file' 
+            ta.item_id = mf.id
+            AND ta.item_type = 'media_file'
             AND ta.user_id = ?
           )`
         };
@@ -553,21 +637,15 @@ class MBNDSynchronizer {
       HAVING total_tracks_play_count > 0 OR tracks_rated_count > 0 OR tracks_last_played IS NOT NULL
     `;
 
-    const params = [user.id, user.id];
+    const params: (string | number)[] = [user.id, user.id];
     if (artistIds?.length) {
       params.push(...artistIds);
     }
 
-    const results = database.query(query, params);
-
-    return results;
+    return database.query<ArtistWithStatsRow>(query, params);
   }
 
-  /**
-   * @param {Set<string>|null} artistsToUpdate
-   * @returns {Promise<number>}
-   */
-  async artistsSync(artistsToUpdate = null) {
+  async artistsSync(artistsToUpdate: Set<string> | null = null): Promise<number> {
     const { options, user, database } = this;
 
     console.log('Processing artists...');
@@ -595,7 +673,7 @@ class MBNDSynchronizer {
 
         const needsCreate = artistData.artist_play_count === null && artistData.artist_rating === null;
 
-        const update = {};
+        const update: AnnotationUpdate = {};
         const currentPlayCount = artistData.artist_play_count || 0;
         const currentRating = artistData.artist_rating || 0;
         const currentPlayDate = artistData.artist_last_played;
