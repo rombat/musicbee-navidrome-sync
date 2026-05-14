@@ -5,14 +5,10 @@ import cliProgress from 'cli-progress';
 import csv2json from 'csvtojson';
 import dayjs, { type Dayjs } from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat.js';
-import duration from 'dayjs/plugin/duration.js';
-import relativeTime from 'dayjs/plugin/relativeTime.js';
 import utc from 'dayjs/plugin/utc.js';
 
 dayjs.extend(utc);
 dayjs.extend(customParseFormat);
-dayjs.extend(duration);
-dayjs.extend(relativeTime);
 
 import packageJson from '../package.json' with { type: 'json' };
 import type { AnnotationUpdate, Database } from './Database.js';
@@ -243,7 +239,7 @@ class MBNDSynchronizer {
       }
 
       this.database.close();
-      console.log(`${action} completed successfully ${dayjs.duration(dayjs().diff(this.start)).humanize(true)}`);
+      console.log(`${action} completed successfully in ${dayjs().diff(this.start, 'second')}s`);
     } catch (e) {
       this.globalErrorHander(e);
     }
@@ -310,7 +306,7 @@ class MBNDSynchronizer {
         }
         return fileLineString;
       })
-      .subscribe(async (track: CsvTrack) => {
+      .subscribe((track: CsvTrack) => {
         const trackEligible = !!track.playCount || !!track.rating || !!track.lastPlayed || !!track.love;
         if (!trackEligible) {
           return;

@@ -15,7 +15,7 @@ echo "Building MBNDS exe..."
 npx @yao-pkg/pkg index.cjs --public --target node22-win-x64 --compress Brotli -o mbnds.exe
 
 PKG_NAME=$(node -e "process.stdout.write(require('../package.json').name)")
-PKG_DESC=$(node -e "process.stdout.write(require('../package.json').description)")
+PKG_DESC="MusicBee to Navidrome Sync"
 PKG_AUTHOR=$(node -e "process.stdout.write(require('../package.json').author)")
 PKG_VERSION=$(node -e "
   const v = require('../package.json').version;
@@ -27,7 +27,7 @@ npx resedit mbnds.exe musicbee-navidrome-sync.exe \
   --icon 1,../assets/logos/mbnds-logo-icon.ico \
   --company-name "$PKG_AUTHOR" \
   --internal-name "$PKG_NAME" \
-  --product-name "MusicBee to Navidrome Sync" \
+  --product-name "$PKG_DESC" \
   --product-version "$PKG_VERSION.0" \
   --file-description "$PKG_DESC" \
   --file-version "$PKG_VERSION.0"
