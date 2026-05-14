@@ -11,7 +11,7 @@
     "build": "sh ./build.sh",
     "build-bundle": "node build.config.js",
     "typecheck": "tsc --noEmit",
-    "test": "NODE_NO_WARNINGS=1 tsx --test test/*.js test/*.ts"
+    "test": "NODE_NO_WARNINGS=1 tsx --test test/*.ts"
   },
   "author": "rombat",
   "license": "GNU GPL V3.0",

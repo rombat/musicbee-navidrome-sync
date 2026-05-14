@@ -10,12 +10,10 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
-    "allowJs": true,
-    "checkJs": false,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "verbatimModuleSyntax": false
   },
-  "include": ["index.js", "index.ts", "lib/**/*", "test/**/*"],
+  "include": ["index.ts", "lib/**/*", "test/**/*"],
   "exclude": ["node_modules", "backups", "data", "dist", ".dist"]
 }

@@ -113,6 +113,7 @@ type ArtistWithStatsRow = {
 
 class MBNDSynchronizer {
   private readonly REQUIRED_HEADERS: readonly string[];
+  // biome-ignore lint/correctness/noUnusedPrivateClassMembers: accessed via destructuring (const { paths } = this)
   private paths: SyncPaths;
   private options: SyncOptions;
   private start: Dayjs;

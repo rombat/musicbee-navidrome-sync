@@ -8,19 +8,17 @@ import utc from 'dayjs/plugin/utc.js';
 dayjs.extend(utc);
 dayjs.extend(customParseFormat);
 
+import type { Database } from '../lib/Database.js';
 import * as dbManager from '../lib/Database.js';
 
 describe('Database', () => {
-  let database;
+  let database: Database;
 
   afterEach(() => {
-    if (database) {
-      try {
-        database.close();
-      } catch (_e) {
-        // Ignore close errors during cleanup
-      }
-      database = null;
+    try {
+      database.close();
+    } catch (_e) {
+      // Ignore close errors during cleanup
     }
   });
 
@@ -33,8 +31,8 @@ describe('Database', () => {
 
     it('should verify connection with test query', async () => {
       database = await dbManager.init(':memory:');
-      const result = database.prepare('SELECT 1 as test').get();
-      assert.strictEqual(result.test, 1);
+      const result = database.prepare('SELECT 1 as test').get() as { test: number } | undefined;
+      assert.strictEqual(result?.test, 1);
     });
 
     it('should handle invalid database path gracefully', async () => {
@@ -69,23 +67,23 @@ describe('Database', () => {
     });
 
     it('should execute query with parameters', () => {
-      const results = database.query('SELECT * FROM test_table WHERE value > ?', [150]);
+      const results = database.query<{ name: string; value: number }>('SELECT * FROM test_table WHERE value > ?', [150]);
       assert.strictEqual(results.length, 1);
       assert.strictEqual(results[0].name, 'test2');
       assert.strictEqual(results[0].value, 200);
     });
 
     it('should execute query without parameters', () => {
-      const results = database.query('SELECT COUNT(*) as count FROM test_table');
+      const results = database.query<{ count: number }>('SELECT COUNT(*) as count FROM test_table');
       assert.strictEqual(results.length, 1);
       assert.strictEqual(results[0].count, 2);
     });
 
     it('should prepare and execute statements', () => {
       const stmt = database.prepare('SELECT * FROM test_table WHERE name = ?');
-      const result = stmt.get('test1');
-      assert.strictEqual(result.name, 'test1');
-      assert.strictEqual(result.value, 100);
+      const result = stmt.get('test1') as { name: string; value: number } | undefined;
+      assert.strictEqual(result?.name, 'test1');
+      assert.strictEqual(result?.value, 100);
     });
 
     it('should handle empty results', () => {
@@ -289,7 +287,14 @@ describe('Database', () => {
           needsCreate: true
         });
 
-        const result = database.prepare('SELECT * FROM annotation WHERE user_id = ? AND item_id = ?').get('user1', 'track1');
+        const result = database.prepare('SELECT * FROM annotation WHERE user_id = ? AND item_id = ?').get('user1', 'track1') as
+          | {
+              play_count: number;
+              rating: number;
+              play_date: string;
+              item_type: string;
+            }
+          | undefined;
         assert(result);
         assert.strictEqual(result.play_count, 5);
         assert.strictEqual(result.rating, 4);
@@ -302,7 +307,7 @@ describe('Database', () => {
         database
           .prepare(
             `
-          INSERT INTO annotation (user_id, item_id, item_type, play_count, rating) 
+          INSERT INTO annotation (user_id, item_id, item_type, play_count, rating)
           VALUES (?, ?, ?, ?, ?)
         `
           )
@@ -321,9 +326,14 @@ describe('Database', () => {
           needsCreate: false
         });
 
-        const result = database.prepare('SELECT * FROM annotation WHERE user_id = ? AND item_id = ?').get('user1', 'track1');
-        assert.strictEqual(result.play_count, 8);
-        assert.strictEqual(result.rating, 5);
+        const result = database.prepare('SELECT * FROM annotation WHERE user_id = ? AND item_id = ?').get('user1', 'track1') as
+          | {
+              play_count: number;
+              rating: number;
+            }
+          | undefined;
+        assert.strictEqual(result?.play_count, 8);
+        assert.strictEqual(result?.rating, 5);
       });
 
       it('should handle date formatting correctly', async () => {
@@ -341,9 +351,14 @@ describe('Database', () => {
           needsCreate: true
         });
 
-        const result = database.prepare('SELECT * FROM annotation WHERE user_id = ? AND item_id = ?').get('user1', 'track1');
-        assert.strictEqual(result.play_date, '2024-01-15 10:30:00');
-        assert.strictEqual(result.starred_at, '2024-01-15 10:30:00');
+        const result = database.prepare('SELECT * FROM annotation WHERE user_id = ? AND item_id = ?').get('user1', 'track1') as
+          | {
+              play_date: string;
+              starred_at: string;
+            }
+          | undefined;
+        assert.strictEqual(result?.play_date, '2024-01-15 10:30:00');
+        assert.strictEqual(result?.starred_at, '2024-01-15 10:30:00');
       });
 
       it('should handle MusicBee CSV dayjs objects correctly', async () => {
@@ -365,8 +380,14 @@ describe('Database', () => {
           needsCreate: true
         });
 
-        const result = database.prepare('SELECT * FROM annotation WHERE user_id = ? AND item_id = ?').get('user1', 'track1');
+        const result = database.prepare('SELECT * FROM annotation WHERE user_id = ? AND item_id = ?').get('user1', 'track1') as
+          | {
+              play_date: string;
+              rating: number;
+            }
+          | undefined;
         // Should store the UTC time (which would be 05:38 if local timezone was UTC+2)
+        assert.ok(result);
         assert.match(result.play_date, /2009-04-28 \d{2}:38:00/); // Time depends on local timezone
         assert.strictEqual(result.rating, 5);
       });
@@ -392,11 +413,19 @@ describe('Database', () => {
           needsCreate: true
         });
 
-        const albumResult = database.prepare('SELECT * FROM annotation WHERE item_type = ?').get('album');
-        const artistResult = database.prepare('SELECT * FROM annotation WHERE item_type = ?').get('artist');
+        const albumResult = database.prepare('SELECT * FROM annotation WHERE item_type = ?').get('album') as
+          | {
+              item_id: string;
+            }
+          | undefined;
+        const artistResult = database.prepare('SELECT * FROM annotation WHERE item_type = ?').get('artist') as
+          | {
+              item_id: string;
+            }
+          | undefined;
 
-        assert.strictEqual(albumResult.item_id, 'album1');
-        assert.strictEqual(artistResult.item_id, 'artist1');
+        assert.strictEqual(albumResult?.item_id, 'album1');
+        assert.strictEqual(artistResult?.item_id, 'artist1');
       });
     });
 
@@ -432,7 +461,11 @@ describe('Database', () => {
           needsCreate: true
         });
 
-        const result = database.prepare('SELECT * FROM annotation WHERE user_id = ? AND item_id = ?').get('user1', 'track1');
+        const result = database.prepare('SELECT * FROM annotation WHERE user_id = ? AND item_id = ?').get('user1', 'track1') as
+          | {
+              ann_id: string;
+            }
+          | undefined;
         assert(result);
         assert(result.ann_id);
         assert.strictEqual(typeof result.ann_id, 'string');
@@ -443,7 +476,7 @@ describe('Database', () => {
         database
           .prepare(
             `
-          INSERT INTO annotation (ann_id, user_id, item_id, item_type, play_count, rating) 
+          INSERT INTO annotation (ann_id, user_id, item_id, item_type, play_count, rating)
           VALUES (?, ?, ?, ?, ?, ?)
         `
           )
@@ -459,10 +492,16 @@ describe('Database', () => {
           needsCreate: false
         });
 
-        const result = database.prepare('SELECT * FROM annotation WHERE ann_id = ?').get('existing-id');
-        assert.strictEqual(result.play_count, 8);
-        assert.strictEqual(result.rating, 5);
-        assert.strictEqual(result.ann_id, 'existing-id');
+        const result = database.prepare('SELECT * FROM annotation WHERE ann_id = ?').get('existing-id') as
+          | {
+              play_count: number;
+              rating: number;
+              ann_id: string;
+            }
+          | undefined;
+        assert.strictEqual(result?.play_count, 8);
+        assert.strictEqual(result?.rating, 5);
+        assert.strictEqual(result?.ann_id, 'existing-id');
       });
     });
 
@@ -510,7 +549,7 @@ describe('Database', () => {
           });
           assert.fail('Should have thrown duplicate key error');
         } catch (error) {
-          assert(error.message.includes('UNIQUE constraint failed'));
+          assert((error as Error).message.includes('UNIQUE constraint failed'));
         }
       });
 
@@ -556,7 +595,7 @@ describe('Database', () => {
           throw new Error('Transaction failure');
         });
       } catch (error) {
-        assert.strictEqual(error.message, 'Transaction failure');
+        assert.strictEqual((error as Error).message, 'Transaction failure');
       }
 
       const results = database.query('SELECT * FROM trans_test');
@@ -568,8 +607,8 @@ describe('Database', () => {
     it('should close database connection properly', async () => {
       database = await dbManager.init(':memory:');
 
-      const result = database.prepare('SELECT 1 as test').get();
-      assert.strictEqual(result.test, 1);
+      const result = database.prepare('SELECT 1 as test').get() as { test: number } | undefined;
+      assert.strictEqual(result?.test, 1);
 
       database.close();
 
@@ -577,7 +616,7 @@ describe('Database', () => {
         database.prepare('SELECT 1 as test').get();
         assert.fail('Should have thrown error on closed database');
       } catch (error) {
-        assert(error.message.includes('database is not open'));
+        assert((error as Error).message.includes('database is not open'));
       }
     });
 
@@ -592,7 +631,7 @@ describe('Database', () => {
         database.close();
       } catch (error) {
         // It's acceptable if the second close throws an error
-        assert(error.message.includes('database is not open'));
+        assert((error as Error).message.includes('database is not open'));
       }
     });
   });
