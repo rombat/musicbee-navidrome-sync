@@ -73,5 +73,5 @@ const isDateAfter = (dateA: Dayjs | string | null | undefined, dateB: string | n
   return dayjsA.isAfter(dayjsB);
 };
 
-export { findBestMatch, isDateAfter };
 export type { MBTrackForMatch, WithPath };
+export { findBestMatch, isDateAfter };
