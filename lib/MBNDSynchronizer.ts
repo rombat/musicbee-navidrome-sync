@@ -66,7 +66,6 @@ type CsvTrack = {
 type NavidromeUser = {
   id: string;
   user_name: string;
-  [key: string]: unknown;
 };
 
 type FoundTrackRow = {
@@ -190,11 +189,10 @@ class MBNDSynchronizer {
   getUser(): NavidromeUser {
     const { database, options } = this;
 
-    // TODO : don't really need to select the whole user
     const user = (
       options.user
-        ? database.prepare('SELECT * FROM user WHERE user_name = ?').get(options.user)
-        : database.prepare('SELECT * FROM user LIMIT 1').get()
+        ? database.prepare('SELECT id, user_name FROM user WHERE user_name = ?').get(options.user)
+        : database.prepare('SELECT id, user_name FROM user LIMIT 1').get()
     ) as NavidromeUser | undefined;
 
     if (!user) {
