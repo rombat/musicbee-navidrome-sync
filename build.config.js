@@ -1,7 +1,7 @@
 import { build } from 'esbuild';
 
 const buildConfig = {
-  entryPoints: ['index.js'],
+  entryPoints: ['index.ts'],
   bundle: true,
   platform: 'node',
   target: 'node22',

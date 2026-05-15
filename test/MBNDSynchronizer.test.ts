@@ -1,12 +1,24 @@
 import assert from 'node:assert';
-import { afterEach, beforeEach, describe, it, mock } from 'node:test';
 import fs from 'node:fs';
+import { afterEach, beforeEach, describe, it, mock } from 'node:test';
 
-import { MBNDSynchronizer } from '../lib/MBNDSynchronizer.js';
+import { MBNDSynchronizer, type RawSyncOptions } from '../lib/MBNDSynchronizer.js';
+
+// Tests need access to private fields for mocking. Use a narrow internal type
+// instead of `as any` to maintain some type documentation.
+type SynchronizerInternals = {
+  options: RawSyncOptions & { user: string };
+  database: unknown;
+  user: { id: number | string };
+  paths: { csvFilePath: string | undefined; [key: string]: unknown };
+  processCsv: (mode: 'count' | 'process', onTrack?: unknown) => Promise<number>;
+  albumsSync: () => Promise<number>;
+  artistsSync: () => Promise<number>;
+};
 
 describe('MBNDSynchronizer', () => {
-  let synchronizer;
-  const mockOptions = {
+  let synchronizer: MBNDSynchronizer;
+  const mockOptions: RawSyncOptions = {
     user: 'testUser',
     csv: 'test.csv',
     db: 'test.db',
@@ -29,7 +41,7 @@ describe('MBNDSynchronizer', () => {
 
   describe('constructor', () => {
     it('should initialize with provided options', () => {
-      assert.strictEqual(synchronizer.options.user, 'testUser');
+      assert.strictEqual((synchronizer as unknown as SynchronizerInternals).options.user, 'testUser');
     });
   });
 
@@ -41,7 +53,7 @@ describe('MBNDSynchronizer', () => {
           get: mock.fn(() => ({ id: 1, user_name: 'testUser' }))
         }))
       };
-      synchronizer.database = mockDatabase;
+      (synchronizer as unknown as SynchronizerInternals).database = mockDatabase;
 
       const user = synchronizer.getUser();
       assert.strictEqual(user.user_name, 'testUser');
@@ -70,32 +82,40 @@ describe('MBNDSynchronizer', () => {
           }
         ]),
         upsertAnnotation: mock.fn(),
-        executeTransaction: mock.fn(async cb => await cb())
+        executeTransaction: mock.fn(async (cb: () => Promise<void>) => await cb())
       };
 
-      synchronizer.database = mockDatabase;
-      synchronizer.user = { id: 1 };
-      synchronizer.paths.csvFilePath = 'test.csv';
+      const internals = synchronizer as unknown as SynchronizerInternals;
+      internals.database = mockDatabase;
+      internals.user = { id: 1 };
+      internals.paths.csvFilePath = 'test.csv';
 
       // Mock processCsv to avoid real file reading
-      mock.method(synchronizer, 'processCsv', async (mode, onTrack) => {
-        if (mode === 'count') {
+      mock.method(
+        synchronizer as unknown as SynchronizerInternals,
+        'processCsv',
+        async (mode: string, onTrack?: (track: unknown) => void) => {
+          if (mode === 'count') {
+            return 1;
+          }
+          if (mode === 'process' && onTrack) {
+            onTrack(mockTrack);
+          }
           return 1;
         }
-        if (mode === 'process') {
-          onTrack(mockTrack);
-        }
-        return 1;
-      });
+      );
 
       // Mock albumsSync and artistsSync
-      mock.method(synchronizer, 'albumsSync', () => Promise.resolve(0));
-      mock.method(synchronizer, 'artistsSync', () => Promise.resolve(0));
+      mock.method(synchronizer as unknown as SynchronizerInternals, 'albumsSync', () => Promise.resolve(0));
+      mock.method(synchronizer as unknown as SynchronizerInternals, 'artistsSync', () => Promise.resolve(0));
 
       await synchronizer.fullSync();
 
       assert.strictEqual(mockDatabase.upsertAnnotation.mock.callCount(), 1);
-      const upsertArgs = mockDatabase.upsertAnnotation.mock.calls[0].arguments[0];
+      const upsertArgs = mockDatabase.upsertAnnotation.mock.calls[0].arguments[0] as {
+        itemId: number;
+        update: { play_count: number; rating: number };
+      };
       assert.strictEqual(upsertArgs.itemId, 101);
       assert.strictEqual(upsertArgs.update.play_count, 5);
       assert.strictEqual(upsertArgs.update.rating, 4);
@@ -122,16 +142,20 @@ describe('MBNDSynchronizer', () => {
       const mockDatabase = {
         query: mock.fn(() => mockAlbumData),
         upsertAnnotation: mock.fn(),
-        executeTransaction: mock.fn(async cb => await cb())
+        executeTransaction: mock.fn(async (cb: () => Promise<void>) => await cb())
       };
 
-      synchronizer.database = mockDatabase;
-      synchronizer.user = { id: 1 };
+      (synchronizer as unknown as SynchronizerInternals).database = mockDatabase;
+      (synchronizer as unknown as SynchronizerInternals).user = { id: 1 };
 
       await synchronizer.albumsSync();
 
       assert.strictEqual(mockDatabase.upsertAnnotation.mock.callCount(), 1);
-      const upsertArgs = mockDatabase.upsertAnnotation.mock.calls[0].arguments[0];
+      const upsertArgs = mockDatabase.upsertAnnotation.mock.calls[0].arguments[0] as {
+        itemType: string;
+        itemId: number;
+        update: { play_count: number; rating: number };
+      };
       assert.strictEqual(upsertArgs.itemType, 'album');
       assert.strictEqual(upsertArgs.itemId, 201);
       assert.strictEqual(upsertArgs.update.play_count, 50);
@@ -159,17 +183,21 @@ describe('MBNDSynchronizer', () => {
       const mockDatabase = {
         query: mock.fn(() => mockArtistData),
         upsertAnnotation: mock.fn(),
-        executeTransaction: mock.fn(async cb => await cb()),
+        executeTransaction: mock.fn(async (cb: () => Promise<void>) => await cb()),
         hasMediaFileArtistsTable: mock.fn(() => false)
       };
 
-      synchronizer.database = mockDatabase;
-      synchronizer.user = { id: 1 };
+      (synchronizer as unknown as SynchronizerInternals).database = mockDatabase;
+      (synchronizer as unknown as SynchronizerInternals).user = { id: 1 };
 
       await synchronizer.artistsSync();
 
       assert.strictEqual(mockDatabase.upsertAnnotation.mock.callCount(), 1);
-      const upsertArgs = mockDatabase.upsertAnnotation.mock.calls[0].arguments[0];
+      const upsertArgs = mockDatabase.upsertAnnotation.mock.calls[0].arguments[0] as {
+        itemType: string;
+        itemId: number;
+        update: { play_count: number; rating: number };
+      };
       assert.strictEqual(upsertArgs.itemType, 'artist');
       assert.strictEqual(upsertArgs.itemId, 301);
       assert.strictEqual(upsertArgs.update.play_count, 100);

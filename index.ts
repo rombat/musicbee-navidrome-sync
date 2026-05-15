@@ -1,13 +1,19 @@
-import { program } from 'commander';
-import { MBNDSynchronizer } from './lib/MBNDSynchronizer.js';
+import { type Command, program } from 'commander';
+import { MBNDSynchronizer, type RawSyncOptions } from './lib/MBNDSynchronizer.js';
 import packageJson from './package.json' with { type: 'json' };
 
-const runAction = async (options, command) => {
+const runAction = async (options: RawSyncOptions, command: Command): Promise<void> => {
   const synchronizer = new MBNDSynchronizer(options);
-  await synchronizer.run(command._name);
+  await synchronizer.run(command.name());
 };
 
-const commandLinesOptions = {
+type CliOption = {
+  flags: string;
+  description: string;
+  defaultValue?: string;
+};
+
+const commandLinesOptions: Record<string, CliOption> = {
   csv: {
     flags: '--csv <path>',
     description: 'MusicBee CSV source file path. Default: MusicBee_Export.csv, in the same folder as MBNDS',
@@ -56,7 +62,7 @@ program
   .option(commandLinesOptions.verbose.flags, commandLinesOptions.verbose.description)
   .option(commandLinesOptions.showNotFound.flags, commandLinesOptions.showNotFound.description)
   .option(commandLinesOptions.forceRatings.flags, commandLinesOptions.forceRatings.description)
-  .option(commandLinesOptions.csv.flags, commandLinesOptions.description, commandLinesOptions.defaultValue)
+  .option(commandLinesOptions.csv.flags, commandLinesOptions.csv.description, commandLinesOptions.csv.defaultValue)
   .option(commandLinesOptions.db.flags, commandLinesOptions.db.description, commandLinesOptions.db.defaultValue)
   .option(
     commandLinesOptions.datetimeFormat.flags,

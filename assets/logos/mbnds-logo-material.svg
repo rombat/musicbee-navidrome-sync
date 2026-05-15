@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="6 6 88 88">
+  <defs>
+    <clipPath id="body-clip">
+      <ellipse cx="50" cy="50" rx="21" ry="20"/>
+    </clipPath>
+    <linearGradient id="disc-grad-mat" x1="20%" y1="15%" x2="80%" y2="85%">
+      <stop offset="0%" stop-color="#42A5F5"/>
+      <stop offset="100%" stop-color="#1565C0"/>
+    </linearGradient>
+    <linearGradient id="body-grad-mat" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#FFD54F"/>
+      <stop offset="100%" stop-color="#FFA000"/>
+    </linearGradient>
+    <filter id="bee-shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="1.4"/>
+      <feOffset dx="0" dy="2.2"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.45"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Disc with Material gradient -->
+  <circle cx="50" cy="50" r="43" fill="url(#disc-grad-mat)"/>
+
+  <!-- 3 vinyl grooves -->
+  <g fill="none" stroke="#0D47A1" stroke-width="1" opacity="0.7">
+    <circle cx="50" cy="50" r="38"/>
+    <circle cx="50" cy="50" r="32"/>
+    <circle cx="50" cy="50" r="26"/>
+  </g>
+
+  <!-- Wings (solid white, no outline) -->
+  <g fill="#FFFFFF" opacity="0.92">
+    <ellipse cx="32" cy="37" rx="8.5" ry="11.5" transform="rotate(-25 32 37)"/>
+    <ellipse cx="68" cy="37" rx="8.5" ry="11.5" transform="rotate(25 68 37)"/>
+  </g>
+
+  <!-- Antenna stems -->
+  <g stroke="#212121" stroke-width="2" fill="none" stroke-linecap="round">
+    <path d="M 44 31 Q 41 23 38 16"/>
+    <path d="M 56 31 Q 59 23 62 16"/>
+  </g>
+
+  <!-- Quarter-note heads (mirror-symmetric) -->
+  <ellipse cx="35.4" cy="14" rx="3.3" ry="2.3" transform="rotate(25 35.4 14)" fill="#212121"/>
+  <ellipse cx="64.6" cy="14" rx="3.3" ry="2.3" transform="rotate(-25 64.6 14)" fill="#212121"/>
+
+  <!-- Bee body with Material elevation shadow (Gaussian blur + offset) -->
+  <g filter="url(#bee-shadow)">
+    <ellipse cx="50" cy="50" rx="21" ry="20" fill="url(#body-grad-mat)"/>
+  </g>
+
+  <!-- 2 stripes clipped to body -->
+  <g clip-path="url(#body-clip)">
+    <rect x="20" y="55" width="60" height="3" fill="#37474F"/>
+    <rect x="20" y="63" width="60" height="3" fill="#37474F"/>
+  </g>
+
+  <!-- Kawaii closed eyes -->
+  <path d="M 40 45 Q 44 41 48 45" stroke="#212121" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M 52 45 Q 56 41 60 45" stroke="#212121" stroke-width="2" fill="none" stroke-linecap="round"/>
+</svg>

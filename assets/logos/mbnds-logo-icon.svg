@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="6 6 88 88">
+  <defs>
+    <clipPath id="body-clip">
+      <ellipse cx="50" cy="50" rx="21" ry="20"/>
+    </clipPath>
+    <linearGradient id="disc-grad" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#0095ff"/>
+      <stop offset="100%" stop-color="#0072dc"/>
+    </linearGradient>
+    <linearGradient id="body-grad" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#ffd11a"/>
+      <stop offset="100%" stop-color="#eba600"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Disc (Navidrome blue) with subtle gradient + dark contour -->
+  <circle cx="50" cy="50" r="43" fill="url(#disc-grad)"/>
+  <circle cx="50" cy="50" r="43" fill="none" stroke="#0A1320" stroke-width="1.5"/>
+
+  <!-- 3 vinyl grooves -->
+  <g fill="none" stroke="#003d80" stroke-width="1.2" opacity="0.85">
+    <circle cx="50" cy="50" r="38"/>
+    <circle cx="50" cy="50" r="32"/>
+    <circle cx="50" cy="50" r="26"/>
+  </g>
+
+  <!-- Wings (in front of disc, behind body) -->
+  <g fill="#FFFFFF" fill-opacity="0.78" stroke="#0A1320" stroke-width="1">
+    <ellipse cx="32" cy="37" rx="8.5" ry="11.5" transform="rotate(-25 32 37)"/>
+    <ellipse cx="68" cy="37" rx="8.5" ry="11.5" transform="rotate(25 68 37)"/>
+  </g>
+
+  <!-- Antenna stems -->
+  <g stroke="#0A1320" stroke-width="1.8" fill="none" stroke-linecap="round">
+    <path d="M 44 31 Q 41 23 38 16"/>
+    <path d="M 56 31 Q 59 23 62 16"/>
+  </g>
+
+  <!-- Quarter-note heads (mirror-symmetric, tangent to stems) -->
+  <ellipse cx="35.4" cy="14" rx="3.3" ry="2.3" transform="rotate(25 35.4 14)" fill="#0A1320"/>
+  <ellipse cx="64.6" cy="14" rx="3.3" ry="2.3" transform="rotate(-25 64.6 14)" fill="#0A1320"/>
+
+  <!-- Bee body FILL only (no stroke yet) -->
+  <ellipse cx="50" cy="50" rx="21" ry="20" fill="url(#body-grad)"/>
+
+  <!-- 2 stripes clipped to body shape -->
+  <g clip-path="url(#body-clip)">
+    <rect x="20" y="55" width="60" height="3" fill="#1A2538"/>
+    <rect x="20" y="63" width="60" height="3" fill="#1A2538"/>
+  </g>
+
+  <!-- Bee body CONTOUR on top of stripes (so the outline stays clean) -->
+  <ellipse cx="50" cy="50" rx="21" ry="20" fill="none" stroke="#0A1320" stroke-width="1.5"/>
+
+  <!-- Kawaii closed eyes -->
+  <path d="M 40 45 Q 44 41 48 45" stroke="#0A1320" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  <path d="M 52 45 Q 56 41 60 45" stroke="#0A1320" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+</svg>

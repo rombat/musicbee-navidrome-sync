@@ -1,19 +1,57 @@
 import { randomUUID } from 'node:crypto';
-import { DatabaseSync } from 'node:sqlite';
-import dayjs from 'dayjs';
+import { DatabaseSync, type SQLInputValue, type StatementSync } from 'node:sqlite';
+import dayjs, { type Dayjs } from 'dayjs';
 import utc from 'dayjs/plugin/utc.js';
 
 dayjs.extend(utc);
+
+export type ColumnInfo = {
+  type: string;
+  notNull: boolean;
+  defaultValue: unknown;
+  primaryKey: boolean;
+};
+
+export type TableSchema = Record<string, ColumnInfo>;
+
+export type AnnotationItemType = 'media_file' | 'album' | 'artist';
+
+export type AnnotationUpdate = {
+  play_count?: number;
+  starred?: number;
+  rating?: number;
+  play_date?: Dayjs | string | null;
+  starred_at?: Dayjs | string | null;
+  ann_id?: string;
+};
+
+export type UpsertAnnotationParams = {
+  itemType: AnnotationItemType;
+  userId: string;
+  itemId: string;
+  update: AnnotationUpdate;
+  needsCreate: boolean;
+};
+
+type PragmaTableInfoRow = {
+  name: string;
+  type: string;
+  notnull: number;
+  dflt_value: unknown;
+  pk: number;
+};
 
 /**
  * Database wrapper class that encapsulates db connection and utilities
  */
 class Database {
-  constructor(dbFilePath) {
+  private readonly db: DatabaseSync;
+
+  constructor(dbFilePath: string) {
     this.db = new DatabaseSync(dbFilePath);
 
-    const result = this.db.prepare('SELECT 1 as test').get();
-    if (result.test !== 1) {
+    const result = this.db.prepare('SELECT 1 as test').get() as { test: number } | undefined;
+    if (!result || result.test !== 1) {
       throw new Error('Database connection test failed');
     }
 
@@ -23,15 +61,11 @@ class Database {
     this.db.exec('PRAGMA cache_size=-100000;'); // 100Mb
   }
 
-  /**
-   * @param {string} tableName
-   * @returns {boolean}
-   */
-  tableExists(tableName) {
+  tableExists(tableName: string): boolean {
     const result = this.db
       .prepare(
         `
-        SELECT name FROM sqlite_master 
+        SELECT name FROM sqlite_master
         WHERE type='table' AND name=?
      `
       )
@@ -39,13 +73,9 @@ class Database {
     return !!result;
   }
 
-  /**
-   * @param {string} tableName
-   * @returns {Object} - Schema information with column names as keys
-   */
-  getTableSchema(tableName) {
-    const columns = this.db.prepare(`PRAGMA table_info(${tableName})`).all();
-    const schema = {};
+  getTableSchema(tableName: string): TableSchema {
+    const columns = this.db.prepare(`PRAGMA table_info(${tableName})`).all() as PragmaTableInfoRow[];
+    const schema: TableSchema = {};
     columns.forEach(col => {
       schema[col.name] = {
         type: col.type,
@@ -57,11 +87,7 @@ class Database {
     return schema;
   }
 
-  /**
-   * Check if annotation table has the legacy ann_id column
-   * @returns {boolean}
-   */
-  hasLegacyAnnotationSchema() {
+  hasLegacyAnnotationSchema(): boolean {
     if (!this.tableExists('annotation')) {
       return false;
     }
@@ -69,35 +95,19 @@ class Database {
     return 'ann_id' in schema;
   }
 
-  /**
-   * Check if media_file_artists table exists (new Navidrome schema post BFR >= 0.55.0)
-   * @returns {boolean}
-   */
-  hasMediaFileArtistsTable() {
+  hasMediaFileArtistsTable(): boolean {
     return this.tableExists('media_file_artists');
   }
 
-  /**
-   * @param {string} sql
-   * @param {Array} params
-   * @returns {Array}
-   */
-  query(sql, params = []) {
-    return this.db.prepare(sql).all(...params);
+  query<T = Record<string, unknown>>(sql: string, params: SQLInputValue[] = []): T[] {
+    return this.db.prepare(sql).all(...params) as T[];
   }
 
-  /**
-   * @param {string} sql
-   * @returns {import('node:sqlite').StatementSync}
-   */
-  prepare(sql) {
+  prepare(sql: string): StatementSync {
     return this.db.prepare(sql);
   }
 
-  /**
-   * Execute multiple operations in a single transaction
-   */
-  async executeTransaction(callback) {
+  async executeTransaction(callback: () => void | Promise<void>): Promise<void> {
     this.db.exec('BEGIN TRANSACTION');
     try {
       await callback();
@@ -108,20 +118,11 @@ class Database {
     }
   }
 
-  close() {
+  close(): void {
     this.db.close();
   }
 
-  /**
-   * @param {Object} params - Annotation parameters
-   * @param {('media_file' | 'album' | 'artist')} params.itemType
-   * @param {string} params.userId
-   * @param {string} params.itemId
-   * @param {Object} params.update - Update object with new values
-   * @param {boolean} params.needsCreate - Whether to create new annotation
-   * @returns {void}
-   */
-  upsertAnnotation({ itemType, userId, itemId, update, needsCreate }) {
+  upsertAnnotation({ itemType, userId, itemId, update, needsCreate }: UpsertAnnotationParams): void {
     if (update.play_date) {
       const playDate = dayjs.isDayjs(update.play_date) ? update.play_date : dayjs.utc(update.play_date);
       update.play_date = playDate.format('YYYY-MM-DD HH:mm:ss');
@@ -133,7 +134,7 @@ class Database {
     }
 
     if (needsCreate) {
-      const record = {
+      const record: Record<string, SQLInputValue> = {
         item_type: itemType,
         user_id: userId,
         item_id: itemId,
@@ -142,7 +143,7 @@ class Database {
         rating: 0,
         play_date: null,
         starred_at: null,
-        ...update
+        ...(update as Record<string, SQLInputValue>)
       };
 
       if (this.hasLegacyAnnotationSchema()) {
@@ -163,19 +164,19 @@ class Database {
       this.db
         .prepare(
           `
-        UPDATE annotation 
+        UPDATE annotation
         SET ${setClauses}
-        WHERE item_type = ? 
-        AND user_id = ? 
+        WHERE item_type = ?
+        AND user_id = ?
         AND item_id = ?
       `
         )
-        .run(...Object.values(update), itemType, userId, itemId);
+        .run(...(Object.values(update) as SQLInputValue[]), itemType, userId, itemId);
     }
   }
 }
 
-export const init = dbFilePath => {
+export const init = (dbFilePath: string): Database => {
   try {
     const database = new Database(dbFilePath);
     console.log('Connection has been established successfully.');
@@ -185,3 +186,5 @@ export const init = dbFilePath => {
     throw error;
   }
 };
+
+export { Database };

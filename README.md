@@ -1,3 +1,5 @@
+<img src="assets/logos/mbnds-logo-icon.svg" align="right" height="70px" title="MBNDS" alt="MBNDS logo" />
+
 # MusicBee to Navidrome Sync (MBNDS)
 
 <a href="https://github.com/rombat/musicbee-navidrome-sync/blob/master/LICENCE"><img src="https://img.shields.io/github/license/rombat/musicbee-navidrome-sync?color=green" /></a>
@@ -96,7 +98,7 @@ All commands have these options available:
     - 8.0.\*
     - 9.2.\*
   - Navidrome:
-    - 0.47.5 up to 0.60.\*
+    - 0.47.5 up to 0.61.\*
 
 ## ➡️ What's next ?
 
