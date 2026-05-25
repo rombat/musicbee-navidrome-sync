@@ -45,6 +45,10 @@ MusicBee to Navidrome Sync allows you to:
 12. Once it's done, go back to navidrome `/data` folder where you found `navidrome.db` and overwrite it with the updated one.
 13. Restart Navidrome, and that's it !
 
+<div align="center">
+  <img src="./assets/demo-mbnds.svg" alt="CLI demo" height="600">
+</div>
+
 ## ⌨️ Commands
 
 All commands must be run this way: `musicbee-navidrome-sync.exe [command name] [options]`.  
