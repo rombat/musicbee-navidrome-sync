@@ -102,7 +102,7 @@ All commands have these options available:
     - 8.0.\*
     - 9.2.\*
   - Navidrome:
-    - 0.47.5 up to 0.61.\*
+    - 0.47.5 up to 0.63.\*
 
 ## ➡️ What's next ?
 
