@@ -37,7 +37,7 @@
     "resedit-cli": "3.1.0",
     "semantic-release": "25.0.3",
     "tsx": "4.22.0",
-    "typescript": "6.0.3"
+    "typescript": "7.0.2"
   },
   "engines": {
     "node": ">=22.17.0 <23.0.0"
