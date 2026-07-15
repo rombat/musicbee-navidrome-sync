@@ -120,6 +120,51 @@ describe('MBNDSynchronizer', () => {
       assert.strictEqual(upsertArgs.update.play_count, 5);
       assert.strictEqual(upsertArgs.update.rating, 4);
     });
+
+    it('should export not found tracks to a CSV file when exportNotFound is set', async () => {
+      const mockTrack = {
+        title: 'Song B',
+        playCount: 3,
+        rating: 0,
+        filename: 'song_b.mp3',
+        filePath: 'Music/Artist "Quoted"/Album'
+      };
+
+      const mockDatabase = {
+        query: mock.fn(() => []), // no match -> not found
+        upsertAnnotation: mock.fn(),
+        executeTransaction: mock.fn(async (cb: () => Promise<void>) => await cb())
+      };
+
+      const writeFileSyncMock = mock.method(fs, 'writeFileSync', () => {});
+
+      const internals = synchronizer as unknown as SynchronizerInternals;
+      internals.options.exportNotFound = true;
+      internals.database = mockDatabase;
+      internals.user = { id: 1 };
+      internals.paths.csvFilePath = 'test.csv';
+
+      mock.method(
+        synchronizer as unknown as SynchronizerInternals,
+        'processCsv',
+        async (mode: string, onTrack?: (track: unknown) => void) => {
+          if (mode === 'process' && onTrack) {
+            onTrack(mockTrack);
+          }
+          return 1;
+        }
+      );
+      mock.method(synchronizer as unknown as SynchronizerInternals, 'albumsSync', () => Promise.resolve(0));
+      mock.method(synchronizer as unknown as SynchronizerInternals, 'artistsSync', () => Promise.resolve(0));
+
+      await synchronizer.fullSync();
+
+      assert.strictEqual(mockDatabase.upsertAnnotation.mock.callCount(), 0);
+      assert.strictEqual(writeFileSyncMock.mock.callCount(), 1);
+      const [exportPath, content] = writeFileSyncMock.mock.calls[0].arguments as [string, string];
+      assert.match(exportPath, /^\.\/not_found_tracks_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}\.csv$/);
+      assert.strictEqual(content, 'path\n"Music/Artist ""Quoted""/Album"\n');
+    });
   });
 
   describe('albumsSync', () => {

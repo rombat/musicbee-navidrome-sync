@@ -41,6 +41,10 @@ const commandLinesOptions: Record<string, CliOption> = {
     flags: '--show-not-found',
     description: 'output tracks that were not found in Navidrome database'
   },
+  exportNotFound: {
+    flags: '--export-not-found',
+    description: 'export not found tracks paths to a timestamped CSV file'
+  },
   forceRatings: {
     flags: '--force-ratings',
     description: 'allow forcing rating updates even if they are lower than the rating already saved'
@@ -61,6 +65,7 @@ program
   .option('-f, --first', 'run sync for the first time: add MB playcount to ND playcount')
   .option(commandLinesOptions.verbose.flags, commandLinesOptions.verbose.description)
   .option(commandLinesOptions.showNotFound.flags, commandLinesOptions.showNotFound.description)
+  .option(commandLinesOptions.exportNotFound.flags, commandLinesOptions.exportNotFound.description)
   .option(commandLinesOptions.forceRatings.flags, commandLinesOptions.forceRatings.description)
   .option(commandLinesOptions.csv.flags, commandLinesOptions.csv.description, commandLinesOptions.csv.defaultValue)
   .option(commandLinesOptions.db.flags, commandLinesOptions.db.description, commandLinesOptions.db.defaultValue)
