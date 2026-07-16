@@ -18,7 +18,6 @@ import { findBestMatch, isDateAfter } from './helpers.js';
 export type RawSyncOptions = {
   first?: boolean;
   forceRatings?: boolean;
-  showNotFound?: boolean;
   exportNotFound?: boolean;
   verbose?: boolean;
   csv?: string;
@@ -30,7 +29,6 @@ export type RawSyncOptions = {
 type SyncOptions = {
   first: boolean;
   forceRatings: boolean;
-  showNotFound: boolean;
   exportNotFound: boolean;
   verbose: boolean;
   csv?: string;
@@ -141,7 +139,6 @@ class MBNDSynchronizer {
       ...options,
       first: !!options.first,
       forceRatings: !!options.forceRatings,
-      showNotFound: !!options.showNotFound,
       exportNotFound: !!options.exportNotFound,
       verbose: !!options.verbose
     };
@@ -385,9 +382,10 @@ class MBNDSynchronizer {
         if (!foundTrack) {
           notFoundTracksCount++;
           if (options.exportNotFound) {
-            notFoundTracks.push(track.filePath);
+            const separator = track.filePath.includes('\\') ? '\\' : '/';
+            notFoundTracks.push(`${track.filePath}${separator}${track.filename}`);
           }
-          if (options.verbose || options.showNotFound) {
+          if (options.verbose) {
             console.error(`track not found. path: ${track.filePath} | filename: ${track.filename}`);
           }
           return;

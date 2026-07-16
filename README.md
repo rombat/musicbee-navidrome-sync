@@ -63,7 +63,6 @@ Syncs playcounts, track ratings, loved tracks and last played date from MusicBee
 - `-f, --first` : runs sync for the first time: **add** MusicBee playcount to Navidrome playcount. If not used, playcount will be updated only if greater than Navidrome's one (see [Notes](#-notes)).
 - `--csv <path>` : MusicBee CSV source file path. By default if not passed, will look for a file named `MusicBee_Export.csv` in the same folder as `musicbee-navidrome-sync.exe`
 - `--datetime-format <format>` : MusicBee CSV datetime format. Default: `"DD/MM/YYYY HH:mm"`. Use available formats from https://day.js.org/docs/en/display/format
-- `--show-not-found` : display tracks that were not found in Navidrome database (useful for troubleshooting missing tracks without verbose output noise)
 - `--export-not-found` : export the paths of tracks that were not found in Navidrome database to a timestamped CSV file (e.g. `not_found_tracks_2026-07-15_10-30-00.csv`), created in the same folder as `musicbee-navidrome-sync.exe`
 
 ### albumsSync

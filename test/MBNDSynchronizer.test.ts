@@ -163,7 +163,7 @@ describe('MBNDSynchronizer', () => {
       assert.strictEqual(writeFileSyncMock.mock.callCount(), 1);
       const [exportPath, content] = writeFileSyncMock.mock.calls[0].arguments as [string, string];
       assert.match(exportPath, /^\.\/not_found_tracks_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}\.csv$/);
-      assert.strictEqual(content, 'path\n"Music/Artist ""Quoted""/Album"\n');
+      assert.strictEqual(content, 'path\n"Music/Artist ""Quoted""/Album/song_b.mp3"\n');
     });
   });
 
