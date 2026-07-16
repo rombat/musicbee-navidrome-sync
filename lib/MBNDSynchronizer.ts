@@ -18,7 +18,7 @@ import { findBestMatch, isDateAfter } from './helpers.js';
 export type RawSyncOptions = {
   first?: boolean;
   forceRatings?: boolean;
-  showNotFound?: boolean;
+  exportNotFound?: boolean;
   verbose?: boolean;
   csv?: string;
   db?: string;
@@ -29,7 +29,7 @@ export type RawSyncOptions = {
 type SyncOptions = {
   first: boolean;
   forceRatings: boolean;
-  showNotFound: boolean;
+  exportNotFound: boolean;
   verbose: boolean;
   csv?: string;
   db?: string;
@@ -139,7 +139,7 @@ class MBNDSynchronizer {
       ...options,
       first: !!options.first,
       forceRatings: !!options.forceRatings,
-      showNotFound: !!options.showNotFound,
+      exportNotFound: !!options.exportNotFound,
       verbose: !!options.verbose
     };
 
@@ -203,7 +203,7 @@ class MBNDSynchronizer {
     if (!fs.existsSync('./backups')) {
       fs.mkdirSync('./backups');
     }
-    paths.backupFilePath = `./backups/navidrome_${dayjs().format('YYYY-MM-DD_HH-mm-ss')}_backup.db`;
+    paths.backupFilePath = `./backups/navidrome_${this.start.format('YYYY-MM-DD_HH-mm-ss')}_backup.db`;
     if (!paths.dbFilePath) {
       throw new Error('DB file path not set');
     }
@@ -330,6 +330,7 @@ class MBNDSynchronizer {
 
     let trackUpdatedCount = 0;
     let notFoundTracksCount = 0;
+    const notFoundTracks: string[] = [];
 
     const totalEligibleTracks = await this.processCsv('count');
     console.log(`${paths.csvFilePath} parsed successfully, ${totalEligibleTracks} potential tracks to be updated`);
@@ -380,7 +381,11 @@ class MBNDSynchronizer {
 
         if (!foundTrack) {
           notFoundTracksCount++;
-          if (options.verbose || options.showNotFound) {
+          if (options.exportNotFound) {
+            const separator = track.filePath.includes('\\') ? '\\' : '/';
+            notFoundTracks.push(`${track.filePath}${separator}${track.filename}`);
+          }
+          if (options.verbose) {
             console.error(`track not found. path: ${track.filePath} | filename: ${track.filename}`);
           }
           return;
@@ -444,6 +449,12 @@ class MBNDSynchronizer {
 
     if (notFoundTracksCount > 0) {
       console.warn(`${notFoundTracksCount} tracks not found`);
+      if (options.exportNotFound) {
+        const exportPath = `./not_found_tracks_${this.start.format('YYYY-MM-DD_HH-mm-ss')}.csv`;
+        const rows = notFoundTracks.map(trackPath => `"${trackPath.replace(/"/g, '""')}"`);
+        fs.writeFileSync(exportPath, `path\n${rows.join('\n')}\n`);
+        console.log(`Not found tracks exported to ${exportPath}`);
+      }
     }
 
     await this.albumsSync();
